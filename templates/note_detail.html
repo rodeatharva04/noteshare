@@ -173,7 +173,6 @@
     <div class="card-body p-0">
         <div class="dark-glass-viewer">
             {% with ftype=note.get_file_type %}
-
             {% if ftype == 'code' %}
             <div class="px-3 py-2 d-flex justify-content-between align-items-center flex-shrink-0" style="background: rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.1); height: 50px;">
                 <div class="d-flex align-items-center gap-2">
@@ -210,25 +209,20 @@
                     showToast("Code copied to clipboard!", "success");
                 }
             </script>
-
             {% elif ftype == 'pdf' %}
             <iframe src="{{ note.file.url }}" class="paper-iframe"></iframe>
-
             {% elif ftype == 'office' %}
             <iframe src="https://docs.google.com/viewer?url={{ request.scheme }}://{{ request.get_host }}{{ note.file.url }}&embedded=true" class="paper-iframe"></iframe>
-
             {% elif ftype == 'image' %}
             <div class="d-flex align-items-center justify-content-center h-100 w-100 p-4">
                 <img src="{{ note.file.url }}" style="max-width: 100%; max-height: 100%; object-fit: contain;">
             </div>
-
             {% elif ftype == 'video' %}
             <div class="d-flex align-items-center justify-content-center h-100 w-100 bg-black">
                 <video controls style="width: 100%; max-height: 100%;">
                     <source src="{{ note.file.url }}">
                 </video>
             </div>
-
             {% elif ftype == 'audio' %}
             <div class="d-flex flex-column align-items-center justify-content-center h-100 w-100">
                 <div class="p-5 rounded-circle mb-4" style="background: rgba(255,255,255,0.05);">
@@ -239,7 +233,6 @@
                     <source src="{{ note.file.url }}">
                 </audio>
             </div>
-
             {% else %}
             <div class="d-flex flex-column align-items-center justify-content-center h-100 w-100 text-center p-5">
                 <i class="fas fa-file-download fa-4x mb-3 opacity-50 text-white"></i>
@@ -247,7 +240,6 @@
                 <a href="{{ note.file.url }}" class="btn btn-brand mt-2" download>Download File</a>
             </div>
             {% endif %}
-
             {% endwith %}
         </div>
     </div>
@@ -263,7 +255,6 @@
                         <span><i class="fas fa-calendar-alt me-1"></i> {{ note.created_at|date:"M d, Y" }}</span>
                         <span>&bull;</span>
                         <span><i class="fas fa-eye me-1"></i> {{ note.view_count }} Views</span>
-
                         {% if request.user == note.user %}
                         <span>&bull;</span>
                         <a href="{% url 'edit_note' note.pk %}" class="text-decoration-none hover-warning" style="color: var(--brand-accent);">Edit</a>
@@ -275,7 +266,6 @@
                         {% endif %}
                     </div>
                 </div>
-
                 <div class="mb-4">
                     {% if note.course %}
                     <div class="mb-3">
@@ -287,7 +277,6 @@
                         </div>
                     </div>
                     {% endif %}
-
                     {% if note.tags %}
                     <div>
                         <span class="small text-muted text-uppercase fw-bold" style="letter-spacing: 1px;">Tags</span><br>
@@ -299,7 +288,6 @@
                     </div>
                     {% endif %}
                 </div>
-
                 {% if note.description and note.description.strip %}
                 <div class="mt-4 pt-4" style="border-top: 1px solid var(--border-color);">
                     <h5 class="fw-bold text-white mb-3">About this Note</h5>
@@ -318,19 +306,17 @@
                 </div>
                 <div class="card-body p-4">
                     <div class="d-flex gap-3 mb-4">
-                        <a href="{{ note.file.url }}" target="_blank" class="btn btn-outline-light flex-grow-1 fw-bold d-flex align-items-center justify-content-center" style="border-color: var(--border-color); padding: 12px 0;" title="Open in Browser">
+                        <a href="{{ note.file.url }}" target="_blank" class="btn btn-outline-light flex-grow-1 fw-bold d-flex align-items-center justify-content-center" style="border-color: var(--border-color); padding: 12px 0;">
                             <i class="fas fa-external-link-alt me-2"></i> View
                         </a>
-                        <a href="{{ note.file.url }}" download class="btn btn-brand flex-grow-1 fw-bold shadow-lg d-flex align-items-center justify-content-center" style="padding: 12px 0;" title="Save to Device">
+                        <a href="{{ note.file.url }}" download class="btn btn-brand flex-grow-1 fw-bold shadow-lg d-flex align-items-center justify-content-center" style="padding: 12px 0;">
                             <i class="fas fa-download me-2"></i> Save
                         </a>
                     </div>
-
                     <a href="{% url 'ai_chat_page' note.pk %}" class="btn btn-gemini w-100 fw-bold py-2 mb-4 d-flex align-items-center justify-content-center gap-2">
                         <i class="fas fa-sparkles text-warning fa-sparkles-anim"></i>
                         <span>Ask Gemini AI</span>
                     </a>
-
                     <div class="d-flex justify-content-between align-items-center pt-3" style="border-top: 1px solid var(--border-color);">
                         <span class="text-muted small text-uppercase fw-bold">File Type</span>
                         <div class="d-flex align-items-center gap-2">
@@ -342,7 +328,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="card-modern mb-4">
                 <div class="card-body p-3">
                     <div class="d-flex align-items-center gap-3">
@@ -364,7 +349,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="card-modern">
                 <div class="card-body p-4 text-center">
                     <h6 class="text-white fw-bold mb-0">Rate this Material</h6>
@@ -377,7 +361,6 @@
                             (Based on <span id="ratingCount">{{ note.ratings.count }}</span> rating{{ note.ratings.count|pluralize }})
                         </span>
                     </div>
-
                     <form action="{% url 'rate_note' note.pk %}" method="POST" id="ratingForm">
                         {% csrf_token %}
                         <div class="d-flex gap-1 justify-content-center align-items-center mb-2">
@@ -386,13 +369,11 @@
                                 <i class="fas fa-star fa-lg"></i>
                             </button>
                             {% endfor %}
-
-                            <button type="submit" name="score" value="0" class="rating-reset-btn btn btn-link text-decoration-none ms-2 p-0 {% if not user_rating %}d-none{% endif %}" title="Reset Rating" style="color: var(--color-danger);">
+                            <button type="submit" name="score" value="0" class="rating-reset-btn btn btn-link text-decoration-none ms-2 p-0 {% if not user_rating %}d-none{% endif %}" style="color: var(--color-danger);">
                                 <i class="fas fa-undo"></i>
                             </button>
                         </div>
                     </form>
-
                     <small class="text-muted" style="font-size: 0.8rem;" id="userRatingText">
                         {% if user_rating %}
                         Your rating: <span class="text-warning">{{ user_rating }}</span>
@@ -413,7 +394,6 @@
                 <h4 class="fw-bold text-white mb-4">
                     Discussion <span class="opacity-50 fs-5" id="commentCount">({{ comments.count }})</span>
                 </h4>
-
                 {% if user.is_authenticated %}
                 <div class="d-flex gap-3 mb-5">
                     <div class="flex-shrink-0">
@@ -425,7 +405,6 @@
                         </div>
                         {% endif %}
                     </div>
-
                     <div class="flex-grow-1">
                         <form method="post" class="position-relative" id="commentForm">
                             {% csrf_token %}
@@ -442,7 +421,6 @@
                     </div>
                 </div>
                 {% endif %}
-
                 <div class="d-flex flex-column gap-4" id="commentsList">
                     {% for comment in comments %}
                     <div class="d-flex gap-3 animate-fade-in" id="comment-{{ comment.pk }}">
