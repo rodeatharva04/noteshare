@@ -2,10 +2,9 @@
 
 {% block content %}
 <style>
-    /* Fix Chrome Autofill to match Dark Theme Variables */
     input:-webkit-autofill,
-    input:-webkit-autofill:hover, 
-    input:-webkit-autofill:focus, 
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus,
     input:-webkit-autofill:active {
         -webkit-box-shadow: 0 0 0 30px var(--surface-input) inset !important;
         -webkit-text-fill-color: var(--text-main) !important;
@@ -15,10 +14,8 @@
 </style>
 
 <div class="container d-flex justify-content-center align-items-center py-5" style="min-height: 90vh;">
-    <!-- card-modern for unified dark styling -->
     <div class="card-modern" style="max-width: 550px; width: 100%;">
 
-        <!-- Header: Success Gradient (Green) -->
         <div class="card-header-modern bg-gradient-success">
             <div class="mb-2">
                 <i class="fas fa-user-plus fa-3x text-white opacity-75"></i>
@@ -31,7 +28,6 @@
             <form method="post" enctype="multipart/form-data" novalidate id="registerForm">
                 {% csrf_token %}
 
-                <!-- Non-field Errors (Server Side Fallback) -->
                 {% if u_form.non_field_errors %}
                 <div class="alert alert-danger py-2 small shadow-sm mb-4 border-0">
                     {% for error in u_form.non_field_errors %}
@@ -40,16 +36,13 @@
                 </div>
                 {% endif %}
 
-                <!-- SECTION 1: ACCOUNT DETAILS (UserForm) -->
                 <div class="d-flex align-items-center mb-4 pb-2" style="border-bottom: 1px solid var(--border-color);">
-                    <div class="rounded-circle d-flex align-items-center justify-content-center me-2 bg-gradient-success" 
-                         style="width: 30px; height: 30px; --bs-bg-opacity: .2;">
+                    <div class="rounded-circle d-flex align-items-center justify-content-center me-2 bg-gradient-success" style="width: 30px; height: 30px; --bs-bg-opacity: .2;">
                         <i class="fas fa-shield-alt text-white small"></i>
                     </div>
                     <h6 class="text-uppercase text-white opacity-75 fw-bold mb-0" style="letter-spacing: 1px; font-size: 0.8rem;">Account Info</h6>
                 </div>
 
-                <!-- Loop through User Form Fields -->
                 {% for field in u_form %}
                 <div class="mb-3">
                     <label class="small text-white opacity-75 text-uppercase fw-bold mb-1">
@@ -58,7 +51,6 @@
                     </label>
 
                     <div class="input-group">
-                        <!-- Dynamic Icon Logic -->
                         <span class="input-group-text" style="border-color: var(--border-color);">
                             {% if 'username' in field.name %} <i class="fas fa-at text-success"></i>
                             {% elif 'email' in field.name %} <i class="fas fa-envelope text-success"></i>
@@ -66,17 +58,10 @@
                             {% else %} <i class="fas fa-user text-success"></i>
                             {% endif %}
                         </span>
-                        
-                        <!-- Input -->
-                        <input type="{{ field.field.widget.input_type }}" 
-                               name="{{ field.name }}"
-                               id="{{ field.id_for_label }}"
-                               class="form-control {% if field.errors %}is-invalid{% endif %}"
-                               placeholder="Enter {{ field.label|lower }}"
-                               {% if field.value %}value="{{ field.value }}"{% endif %}>
+
+                        <input type="{{ field.field.widget.input_type }}" name="{{ field.name }}" id="{{ field.id_for_label }}" class="form-control {% if field.errors %}is-invalid{% endif %}" placeholder="Enter {{ field.label|lower }}" {% if field.value %}value="{{ field.value }}"{% endif %}>
                     </div>
 
-                    <!-- Field Errors (Server Side Fallback) -->
                     {% if field.errors %}
                     <div class="text-danger small mt-1 fw-bold">
                         {% for error in field.errors %}
@@ -87,16 +72,13 @@
                 </div>
                 {% endfor %}
 
-                <!-- SECTION 2: PROFILE DETAILS (ProfileForm) -->
                 <div class="d-flex align-items-center mb-4 mt-5 pb-2" style="border-bottom: 1px solid var(--border-color);">
-                    <div class="rounded-circle d-flex align-items-center justify-content-center me-2" 
-                         style="width: 30px; height: 30px; background: var(--brand-accent);">
+                    <div class="rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 30px; height: 30px; background: var(--brand-accent);">
                         <i class="fas fa-id-card text-dark small"></i>
                     </div>
                     <h6 class="text-uppercase text-white opacity-75 fw-bold mb-0" style="letter-spacing: 1px; font-size: 0.8rem;">Profile Details</h6>
                 </div>
 
-                <!-- Bio Field -->
                 <div class="mb-3">
                     <label class="small text-white opacity-75 text-uppercase fw-bold mb-1">Bio (Optional)</label>
                     <div class="input-group">
@@ -107,11 +89,9 @@
                     </div>
                 </div>
 
-                <!-- Profile Pic Field -->
                 <div class="mb-4">
                     <label class="small text-white opacity-75 text-uppercase fw-bold mb-1">Profile Picture</label>
                     <div class="input-group">
-                        <!-- ID 'id_profile_pic' required for JS validation -->
                         <input type="file" name="profile_pic" class="form-control" id="id_profile_pic" accept="image/*">
                         <span class="input-group-text" style="border-color: var(--border-color);">
                             <i class="fas fa-camera text-white opacity-50"></i>
@@ -120,7 +100,6 @@
                     <div class="form-text text-white-50 small">Max size: 5MB. Formats: JPG, PNG.</div>
                 </div>
 
-                <!-- Submit Button -->
                 <div class="d-grid mt-5">
                     <button type="submit" id="registerBtn" class="btn-brand shadow-lg fw-bold" style="background: var(--grad-success) !important;">
                         CREATE ACCOUNT
@@ -129,7 +108,6 @@
             </form>
         </div>
 
-        <!-- Footer -->
         <div class="card-footer bg-transparent py-4 text-center" style="border-top: 1px solid var(--border-color);">
             <p class="small text-white opacity-75 mb-0">
                 Already have an account?
@@ -139,21 +117,17 @@
     </div>
 </div>
 
-<!-- AJAX Registration Logic -->
 <script>
     document.getElementById('registerForm').addEventListener('submit', async function(e) {
         e.preventDefault();
-        
+
         const btn = document.getElementById('registerBtn');
         const originalText = btn.innerText;
-        
-        // Inside document.getElementById('registerForm').addEventListener...
 
-    // [PATCH START] Text Length Validation
         const username = this.querySelector('input[name="username"]').value;
         const first_name = this.querySelector('input[name="first_name"]').value;
         const last_name = this.querySelector('input[name="last_name"]').value;
-        
+
         const fileInput = document.getElementById('id_profile_pic');
 
         if (username.length > 15) {
@@ -171,19 +145,17 @@
 
         if (fileInput.files.length > 0) {
             const file = fileInput.files[0];
-            const maxSize = 5 * 1024 * 1024; // 5MB
-            
-            // Check Size
+            const maxSize = 5 * 1024 * 1024;
+
             if (file.size > maxSize) {
                 if (typeof showToast === "function") {
                     showToast("Profile image too large! Max size is 5MB.", "error");
                 } else {
                     alert("Profile image too large! Max size is 5MB.");
                 }
-                return; // Stop execution
+                return;
             }
-            
-            // Check Type (Basic)
+
             if (!file.type.startsWith('image/')) {
                 if (typeof showToast === "function") {
                     showToast("Invalid file. Please upload an image.", "error");
@@ -193,14 +165,11 @@
                 return;
             }
         }
-        // ----------------------------------------
-        
-        // 1. Loading State
+
         btn.disabled = true;
         btn.innerHTML = '<i class="fas fa-circle-notch fa-spin me-2"></i> Creating Account...';
 
         try {
-            // 2. AJAX Request
             const res = await fetch("{% url 'register' %}", {
                 method: 'POST',
                 body: new FormData(this),
@@ -210,33 +179,27 @@
             });
             const data = await res.json();
 
-            // 3. Handle Response
             if (data.status === 'success') {
-                // Success: Redirect to verification
                 showToast('Account created! Redirecting...', 'success');
                 setTimeout(() => {
                     window.location.href = data.redirect_url;
                 }, 1000);
             } else if (data.status === 'error') {
-                // Error: Parse form errors
                 let errorMsg = "Please fix the errors.";
-                
-                // If specific fields have errors, show the first one in the toast
+
                 const keys = Object.keys(data.errors);
                 if (keys.length > 0) {
                     const firstField = keys[0];
                     const firstError = data.errors[firstField][0];
                     errorMsg = `${firstField.toUpperCase()}: ${firstError}`;
                 }
-                
+
                 showToast(errorMsg, 'error');
-                
-                // Reset button
+
                 btn.disabled = false;
                 btn.innerText = originalText;
             } else {
-                // Fallback for unexpected responses
-                window.location.reload(); 
+                window.location.reload();
             }
 
         } catch (err) {
