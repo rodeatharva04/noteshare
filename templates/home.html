@@ -2,7 +2,6 @@
 
 {% block content %}
 <style>
-   
     .line-clamp-3 {
         display: -webkit-box;
         -webkit-line-clamp: 3;
@@ -15,7 +14,6 @@
         word-break: break-word;
     }
 
-   
     .sort-dropdown-btn {
         background-color: var(--surface-input);
         border: 1px solid var(--border-color);
@@ -32,7 +30,6 @@
         box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.25);
     }
 
-   
     .dropdown-item {
         color: var(--text-main);
         padding: 10px 20px;
@@ -51,11 +48,11 @@
         background-color: var(--brand-primary);
         color: white;
     }
-    
-   
+
     #ajax-content-wrapper {
         transition: opacity 0.2s ease-in-out;
     }
+
     .loading-state {
         opacity: 0.5;
         pointer-events: none;
@@ -63,36 +60,22 @@
 </style>
 
 <div class="container py-4">
-    
-   
     <div id="ajax-content-wrapper">
-        
-       
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="fw-bold mb-0">
                 <i class="fas fa-globe-americas me-2 text-primary"></i>
                 <span class="text-white">Explore Notes</span>
             </h2>
 
-           
             <form method="get" id="sortForm" class="d-flex align-items-center" onsubmit="return false;">
-
-               
                 {% if query %}
                 <input type="hidden" name="q" value="{{ query }}">
                 {% endif %}
 
-                
                 <input type="hidden" name="sort" id="sortInput" value="{{ sort_by|default:'recent' }}">
 
-               
                 <div class="dropdown">
-                    
-                    <button
-                        class="btn sort-dropdown-btn rounded-pill px-4 py-2 dropdown-toggle d-flex align-items-center gap-2 shadow-sm"
-                        type="button" data-bs-toggle="dropdown" aria-expanded="false">
-
-                        
+                    <button class="btn sort-dropdown-btn rounded-pill px-4 py-2 dropdown-toggle d-flex align-items-center gap-2 shadow-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         {% if sort_by == 'oldest' %}
                         <i class="fas fa-sort-amount-up-alt text-muted"></i>
                         {% elif sort_by == 'most_viewed' %}
@@ -103,7 +86,6 @@
                         <i class="fas fa-clock text-success"></i>
                         {% endif %}
 
-                        <!-- Dynamic Label -->
                         <span class="fw-bold small text-uppercase">
                             {% if sort_by == 'oldest' %}Oldest
                             {% elif sort_by == 'most_viewed' %}Most Viewed
@@ -112,45 +94,27 @@
                         </span>
                     </button>
 
-                   
-                    <ul class="dropdown-menu dropdown-menu-end shadow-lg border border-secondary"
-                        style="background: var(--surface-card);">
-
-                        <!-- Recent -->
+                    <ul class="dropdown-menu dropdown-menu-end shadow-lg border border-secondary" style="background: var(--surface-card);">
                         <li>
-                            <button
-                                class="dropdown-item d-flex justify-content-between align-items-center {% if sort_by == 'recent' or not sort_by %}active{% endif %}"
-                                type="button" onclick="submitSort('recent')">
+                            <button class="dropdown-item d-flex justify-content-between align-items-center {% if sort_by == 'recent' or not sort_by %}active{% endif %}" type="button" onclick="submitSort('recent')">
                                 <span><i class="fas fa-clock me-2 text-success"></i> Recent</span>
                                 {% if sort_by == 'recent' or not sort_by %}<i class="fas fa-check small"></i>{% endif %}
                             </button>
                         </li>
-
-                        <!-- Oldest -->
                         <li>
-                            <button
-                                class="dropdown-item d-flex justify-content-between align-items-center {% if sort_by == 'oldest' %}active{% endif %}"
-                                type="button" onclick="submitSort('oldest')">
+                            <button class="dropdown-item d-flex justify-content-between align-items-center {% if sort_by == 'oldest' %}active{% endif %}" type="button" onclick="submitSort('oldest')">
                                 <span><i class="fas fa-sort-amount-up-alt me-2 text-muted"></i> Oldest</span>
                                 {% if sort_by == 'oldest' %}<i class="fas fa-check small"></i>{% endif %}
                             </button>
                         </li>
-
-                        <!-- Most Viewed -->
                         <li>
-                            <button
-                                class="dropdown-item d-flex justify-content-between align-items-center {% if sort_by == 'most_viewed' %}active{% endif %}"
-                                type="button" onclick="submitSort('most_viewed')">
+                            <button class="dropdown-item d-flex justify-content-between align-items-center {% if sort_by == 'most_viewed' %}active{% endif %}" type="button" onclick="submitSort('most_viewed')">
                                 <span><i class="fas fa-eye me-2 text-primary"></i> Most Viewed</span>
                                 {% if sort_by == 'most_viewed' %}<i class="fas fa-check small"></i>{% endif %}
                             </button>
                         </li>
-
-                        <!-- Top Rated -->
                         <li>
-                            <button
-                                class="dropdown-item d-flex justify-content-between align-items-center {% if sort_by == 'top_rated' %}active{% endif %}"
-                                type="button" onclick="submitSort('top_rated')">
+                            <button class="dropdown-item d-flex justify-content-between align-items-center {% if sort_by == 'top_rated' %}active{% endif %}" type="button" onclick="submitSort('top_rated')">
                                 <span><i class="fas fa-star me-2 text-warning"></i> Top Rated</span>
                                 {% if sort_by == 'top_rated' %}<i class="fas fa-check small"></i>{% endif %}
                             </button>
@@ -160,56 +124,40 @@
             </form>
         </div>
 
-
         <div class="row g-4" id="notesGrid">
             {% for note in notes %}
             <div class="col-md-6 col-lg-4">
                 <div class="card-modern h-100 d-flex flex-column" style="overflow: hidden;">
-
                     <div class="card-body p-4">
                         <h5 class="card-title fw-bold text-truncate mb-2" title="{{ note.title }}">
-                            <a href="{% url 'note_detail' note.pk %}"
-                                class="text-decoration-none text-white hover-warning transition-all">
+                            <a href="{% url 'note_detail' note.pk %}" class="text-decoration-none text-white hover-warning transition-all">
                                 {{ note.title }}
                             </a>
                         </h5>
-
-                        <p class="card-subtitle mb-3 small text-truncate d-block"
-                            style="color: var(--brand-accent); max-width: 100%;">
+                        <p class="card-subtitle mb-3 small text-truncate d-block" style="color: var(--brand-accent); max-width: 100%;">
                             <i class="fas fa-book me-1"></i> {{ note.course|default:"General" }}
                         </p>
-
                         <p class="card-text text-white opacity-75 small line-clamp-3 mb-4">
                             {{ note.description }}
                         </p>
-
                         <div class="mt-auto">
-                            <a href="{% url 'note_detail' note.pk %}"
-                                class="btn btn-brand w-100 btn-sm rounded-pill shadow-sm">
+                            <a href="{% url 'note_detail' note.pk %}" class="btn btn-brand w-100 btn-sm rounded-pill shadow-sm">
                                 <i class="fas fa-file-alt me-1"></i> View Document
                             </a>
                         </div>
                     </div>
-
-                   
                     <div class="card-footer bg-transparent py-3 px-4" style="border-top: 1px solid var(--border-color);">
                         <div class="d-flex align-items-center justify-content-between w-100">
                             <div class="d-flex align-items-center me-3" style="min-width: 0; flex: 1;">
-                                <a href="{% url 'public_profile' note.user.username %}"
-                                    class="text-decoration-none d-flex align-items-center text-muted w-100">
+                                <a href="{% url 'public_profile' note.user.username %}" class="text-decoration-none d-flex align-items-center text-muted w-100">
                                     {% if note.user.profile.profile_pic %}
-                                    <img src="{{ note.user.profile.profile_pic.url }}"
-                                        class="rounded-circle me-2 flex-shrink-0" width="24" height="24"
-                                        style="object-fit: cover;">
+                                    <img src="{{ note.user.profile.profile_pic.url }}" class="rounded-circle me-2 flex-shrink-0" width="24" height="24" style="object-fit: cover;">
                                     {% else %}
                                     <i class="fas fa-user-circle fa-lg me-2 flex-shrink-0"></i>
                                     {% endif %}
-                                   
                                     <small class="text-truncate fw-bold mb-0 d-block w-100">{{ note.user.username }}</small>
                                 </a>
                             </div>
-
-                          
                             <div class="d-flex align-items-center gap-3 flex-shrink-0 small text-muted">
                                 <div class="d-flex align-items-center">
                                     <span class="text-warning fw-bold me-1">{{ note.avg_rating|default:"0.0" }}</span>
@@ -222,10 +170,8 @@
                                     <i class="fas fa-eye me-1"></i> {{ note.view_count }}
                                 </div>
                             </div>
-
                         </div>
                     </div>
-
                 </div>
             </div>
             {% empty %}
@@ -242,41 +188,29 @@
 </div>
 
 <script>
-   
     function submitSort(value) {
-       
         const urlParams = new URLSearchParams(window.location.search);
         urlParams.set('sort', value);
-        
-        
         const currentQ = urlParams.get('q');
         if (currentQ) urlParams.set('q', currentQ);
-        
         loadContent(window.location.pathname + '?' + urlParams.toString());
     }
 
-  
     async function loadContent(url) {
         const wrapper = document.getElementById('ajax-content-wrapper');
-        
-       
         wrapper.classList.add('loading-state');
-        
         try {
-            const res = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+            const res = await fetch(url, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
             const html = await res.text();
-            
-            
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
             const newContent = doc.getElementById('ajax-content-wrapper').innerHTML;
-            
-           
             wrapper.innerHTML = newContent;
-            
-           
             window.history.pushState({}, '', url);
-
         } catch (err) {
             console.error("AJAX Error:", err);
             window.location.href = url;
@@ -285,30 +219,22 @@
         }
     }
 
-    
     document.addEventListener("DOMContentLoaded", function() {
-      
         const navSearchForm = document.querySelector('form[action="{% url "home" %}"]');
-        
         if (navSearchForm) {
             navSearchForm.addEventListener('submit', function(e) {
-               
                 if (window.location.pathname === "{% url 'home' %}") {
                     e.preventDefault();
                     const formData = new FormData(this);
                     const q = formData.get('q');
-                    
-                    
                     const urlParams = new URLSearchParams(window.location.search);
                     urlParams.set('q', q);
-                    
                     loadContent(window.location.pathname + '?' + urlParams.toString());
                 }
             });
         }
     });
 
-    
     window.addEventListener('popstate', function() {
         loadContent(window.location.href);
     });
