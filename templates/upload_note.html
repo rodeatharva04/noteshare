@@ -2,10 +2,10 @@
 
 {% block content %}
 <div class="container d-flex justify-content-center align-items-center my-4">
-    <!-- card-modern for unified styling -->
+   
     <div class="card-modern" style="max-width: 700px; width: 100%;">
 
-        <!-- HEADER -->
+       
         <div class="card-header-modern">
             <div class="mb-2">
                 {% if form.instance.pk %}
@@ -21,11 +21,11 @@
         </div>
 
         <div class="card-body p-4 p-md-5">
-            <!-- Form Start -->
+          
             <form method="post" id="noteForm" enctype="multipart/form-data" novalidate>
                 {% csrf_token %}
 
-                <!-- 1. TITLE -->
+              
                 <div class="mb-4">
                     <label class="small text-white opacity-75 text-uppercase fw-bold mb-1">Title <span
                             class="text-danger">*</span></label>
@@ -38,13 +38,12 @@
                     </div>
                 </div>
 
-                <!-- 2. FILE UPLOAD -->
+            
                 <div class="mb-4">
                     <label class="small text-white opacity-75 text-uppercase fw-bold mb-1">Note File <span
                             class="text-danger">*</span></label>
                     <div class="input-group">
-                        <input type="file" name="file" class="form-control" id="fileInput" {% if not form.instance.pk
-                            %}required{% endif %}>
+                        <input type="file" name="file" class="form-control" id="fileInput" {% if not form.instance.pk %}required{% endif %}>
                         <label class="input-group-text" for="fileInput" style="border-color: var(--border-color);"><i
                                 class="fas fa-file"></i></label>
                     </div>
@@ -52,7 +51,7 @@
                         Max size: <strong>35 MB</strong>. Supported: PDF, Images, Video, Audio, Code.
                     </div>
 
-                    <!-- File Link (Only shows if editing an existing note) -->
+                   
                     {% if form.instance.pk and form.instance.file %}
                     <small class="text-white opacity-75 d-block mt-2">
                         <i class="fas fa-check-circle text-success me-1"></i> Currently:
@@ -69,7 +68,7 @@
                 </h6>
 
                 <div class="row">
-                    <!-- 3. COURSE -->
+                    
                     <div class="col-md-6 mb-3">
                         <label class="small text-white opacity-75 text-uppercase fw-bold mb-1">Course Name</label>
                         <div class="input-group">
@@ -80,7 +79,7 @@
                         </div>
                     </div>
 
-                    <!-- 4. TAGS -->
+                  
                     <div class="col-md-6 mb-3">
                         <label class="small text-white opacity-75 text-uppercase fw-bold mb-1">Tags</label>
                         <div class="input-group">
@@ -92,14 +91,14 @@
                     </div>
                 </div>
 
-                <!-- 5. DESCRIPTION -->
+               
                 <div class="mb-4">
                     <label class="small text-white opacity-75 text-uppercase fw-bold mb-1">Description</label>
                     <textarea name="description" class="form-control" rows="4"
                         placeholder="Briefly describe what's in this note...">{{ form.description.value|default:'' }}</textarea>
                 </div>
 
-                <!-- ACTION BUTTON -->
+              
                 <div class="d-grid mt-4">
                     <button type="submit" id="submitBtn" class="btn-brand shadow-lg fw-bold">
                         {% if form.instance.pk %}Save Changes{% else %}Upload Note{% endif %}
@@ -108,10 +107,10 @@
             </form>
         </div>
 
-        <!-- FOOTER (Fixed Overflow) -->
+      
         <div class="card-footer bg-transparent py-3" style="border-top: 1px solid var(--border-color);">
             <div class="d-flex justify-content-between align-items-center text-muted small px-3">
-                <!-- User Info -->
+    
                 <div class="d-flex align-items-center me-3" style="min-width: 0; flex: 1;">
                     {% if user.profile and user.profile.profile_pic %}
                     <img src="{{ user.profile.profile_pic.url }}"
@@ -123,7 +122,7 @@
                     <span class="fw-bold text-truncate">{{ user.username }}</span>
                 </div>
 
-                <!-- Date -->
+               
                 <div class="flex-shrink-0">
                     <i class="fas fa-calendar-alt me-1"></i>
                     {% now "M d, Y" %}
@@ -141,9 +140,7 @@
         const originalText = btn.innerText;
         const fileInput = document.getElementById('fileInput');
 
-        // Inside document.getElementById('noteForm').addEventListener...
-
-        // [PATCH START] Text Length Validation
+       
         const title = this.querySelector('input[name="title"]').value;
         const course = this.querySelector('input[name="course"]').value;
         const tags = this.querySelector('input[name="tags"]').value;
@@ -153,23 +150,17 @@
         if (course.length > 30) { showToast("Course max 30 chars.", "error"); return; }
         if (tags.length > 50) { showToast("Tags max 50 chars.", "error"); return; }
         if (desc.length > 1000) { showToast("Description max 1000 chars.", "error"); return; }
-        // [PATCH END]
-
-        // ... (File validation logic continues here) ...
-
-        // --- NEW: Client-Side Size Check (35MB) ---
+       
         if (fileInput.files.length > 0) {
-            const fileSize = fileInput.files[0].size; // in bytes
-            const maxSize = 35 * 1024 * 1024; // 35MB
+            const fileSize = fileInput.files[0].size; 
+            const maxSize = 35 * 1024 * 1024; 
 
             if (fileSize > maxSize) {
                 showToast("File is too large! Max size is 35MB.", "error");
-                return; // Stop execution
+                return; 
             }
         }
-        // ------------------------------------------
-
-        // 1. Determine "Busy" Text
+       
         let loadingText = '<i class="fas fa-spinner fa-spin me-2"></i> Saving...';
         if (fileInput.files.length > 0) {
             loadingText = '<i class="fas fa-cloud-upload-alt fa-bounce me-2"></i> Uploading... (Do not close)';
@@ -179,7 +170,7 @@
         btn.innerHTML = loadingText;
 
         try {
-            // 2. Send Request
+            
             const res = await fetch(window.location.href, {
                 method: 'POST',
                 body: new FormData(this),
@@ -187,19 +178,19 @@
             });
             const data = await res.json();
 
-            // 3. Handle Response
+           
             if (data.status === 'success') {
                 showToast(data.message || 'Saved successfully!', 'success');
                 setTimeout(() => {
                     window.location.href = data.redirect_url || data.next_url;
                 }, 1000);
             } else {
-                // Handle Form Errors
+               
                 let errorMsg = "Please fix the errors.";
                 if (data.errors) {
                     const keys = Object.keys(data.errors);
                     if (keys.length > 0) {
-                        // Logic to format error: "File: File too large"
+                        
                         const fieldName = keys[0].charAt(0).toUpperCase() + keys[0].slice(1);
                         errorMsg = `${fieldName}: ${data.errors[keys[0]][0]}`;
                     }
