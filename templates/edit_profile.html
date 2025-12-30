@@ -10,7 +10,6 @@
                 <i id="default-icon" class="fas fa-user-circle fa-4x text-white-50" style="display: none;"></i>
                 {% else %}
                 <i class="fas fa-user-circle fa-4x text-white-50"></i>
-                {% set_var "show_default" True %}
                 {% endif %}
             </div>
             <h3 class="fw-bold mb-0 mt-2 text-white">Edit Profile</h3>
@@ -20,7 +19,6 @@
         <div class="card-body p-4 p-md-5">
             <form method="post" enctype="multipart/form-data" id="profileForm">
                 {% csrf_token %}
-
                 <div class="d-flex align-items-center mb-4 pb-2" style="border-bottom: 1px solid var(--border-color);">
                     <i class="fas fa-user-tag me-2" style="color: var(--brand-accent);"></i>
                     <h6 class="text-uppercase text-white fw-bold mb-0" style="font-size: 0.8rem;">Identity</h6>
@@ -65,7 +63,6 @@
                     <label for="profile_pic" class="small text-white text-uppercase fw-bold mb-1">Change Picture</label>
                     <input type="file" id="profile_pic_input" name="profile_pic" class="form-control mb-2" accept="image/*">
                     <div class="form-text text-white-50 small">Max size: 5MB. Formats: JPG, PNG.</div>
-
                     {% if user.profile.profile_pic %}
                     <div class="form-check p-2 rounded border mt-2" style="border-color: var(--border-color) !important; background: var(--surface-input);">
                         <input class="form-check-input ms-0 me-2" type="checkbox" name="remove_picture" id="removePic">
@@ -172,12 +169,10 @@
         if (fileInput.files.length > 0) {
             const file = fileInput.files[0];
             const maxSize = 5 * 1024 * 1024;
-
             if (file.size > maxSize) {
                 showToast("Image too large! Max size is 5MB.", "error");
                 return;
             }
-
             if (!file.type.startsWith('image/')) {
                 showToast("Invalid file type. Please upload an image.", "error");
                 return;
@@ -191,20 +186,16 @@
             const res = await fetch("{% url 'edit_profile' %}", {
                 method: 'POST',
                 body: new FormData(this),
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
             });
             const data = await res.json();
 
             if (data.status === 'success') {
                 showToast(data.message || 'Profile updated!', 'success');
-
                 const headerImg = document.getElementById('header-profile-img');
                 if (headerImg && data.new_avatar_url) {
                     headerImg.src = data.new_avatar_url;
                 }
-
                 if (data.redirect_url) {
                     setTimeout(() => window.location.href = data.redirect_url, 1000);
                 } else if (!data.new_avatar_url) {
@@ -235,13 +226,13 @@
         try {
             const res = await fetch("{% url 'init_delete_account' %}", {
                 method: 'POST',
-                headers: {
-                    'X-CSRFToken': '{{ csrf_token }}',
-                    'X-Requested-With': 'XMLHttpRequest'
+                headers: { 
+                    'X-CSRFToken': '{{ csrf_token }}', 
+                    'X-Requested-With': 'XMLHttpRequest' 
                 }
             });
             const data = await res.json();
-
+            
             if (data.status === 'success') {
                 window.location.href = data.redirect_url;
             } else {
