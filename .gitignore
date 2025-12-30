@@ -1,20 +1,18 @@
-# --- Security (NEVER UPLOAD THESE) ---
+
 .env
 db.sqlite3
 
-# --- Python & Django Cache ---
+
 __pycache__/
 *.py[cod]
 *.so
 .DS_Store
 
-# --- Media & Static ---
-# We keep the folders, but not the contents, except a placeholder
+
 media/
 !media/.gitkeep
 staticfiles/
 
-# --- Virtual Environment ---
 venv/
 env/
 .venv/
