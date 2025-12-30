@@ -2,14 +2,11 @@
 
 {% block content %}
 <style>
-    /* === Profile Specific Styles === */
     .profile-banner-mini {
         height: 100px;
-        /* Updated to use global gradient variable but with !important to enforce it */
         background: var(--grad-primary) !important;
         border-bottom: 1px solid var(--border-color);
         border-radius: 16px 16px 0 0;
-        /* Match card radius */
     }
 
     .profile-avatar-mini {
@@ -22,10 +19,8 @@
         border: 1px solid var(--border-color);
     }
 
-    /* === Dark Table Overrides === */
     .table-modern {
         color: #e0e0e0;
-        /* Forced Light Text */
         vertical-align: middle;
         border-color: var(--border-color);
     }
@@ -33,7 +28,6 @@
     .table-modern thead th {
         background-color: var(--surface-input);
         color: #a0a0a0;
-        /* Muted Text */
         border-bottom: 1px solid var(--border-color);
         font-weight: 600;
         text-transform: uppercase;
@@ -48,13 +42,11 @@
         padding-bottom: 1rem;
     }
 
-    /* Hover effect for rows */
     .table-hover tbody tr:hover td {
         background-color: rgba(255, 255, 255, 0.05);
         color: #fff;
     }
 
-    /* Icon Square */
     .icon-square {
         width: 40px;
         height: 40px;
@@ -65,8 +57,7 @@
         justify-content: center;
         border-radius: 8px;
     }
-    
-    /* Animation for row deletion */
+
     .fade-out {
         transition: all 0.5s ease;
         opacity: 0;
@@ -75,58 +66,41 @@
 </style>
 
 <div class="container-fluid px-md-5 py-4">
-
-    <!-- 1. PROFILE HEADER (Compact) -->
     <div class="card-modern mb-5">
         <div class="profile-banner-mini"></div>
-
         <div class="card-body p-4 position-relative">
-            <!-- Profile Pic -->
             <div class="position-absolute top-0 start-0 translate-middle-y ms-4">
                 <div class="profile-avatar-mini shadow-lg">
                     {% if user.profile and user.profile.profile_pic %}
-                    <img src="{{ user.profile.profile_pic.url }}" class="rounded-circle w-100 h-100"
-                        style="object-fit: cover;">
+                    <img src="{{ user.profile.profile_pic.url }}" class="rounded-circle w-100 h-100" style="object-fit: cover;">
                     {% else %}
-                    <div
-                        class="rounded-circle w-100 h-100 d-flex align-items-center justify-content-center bg-dark text-muted">
+                    <div class="rounded-circle w-100 h-100 d-flex align-items-center justify-content-center bg-dark text-muted">
                         <i class="fas fa-user-circle fa-4x text-secondary"></i>
                     </div>
                     {% endif %}
                 </div>
             </div>
 
-            <!-- Header Content -->
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-end mt-4 pt-1">
-                
-                <!-- User Info Section -->
                 <div class="mb-3 mb-md-0 me-3" style="min-width: 0; flex: 1;">
-                    
-                    <!-- 1. Full Name (Large) -->
-                    <!-- strict overflow handling -->
-                    <h2 class="fw-bold text-white mb-1" 
-                        style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; word-break: break-all; line-height: 1.2;">
+                    <h2 class="fw-bold text-white mb-1" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; word-break: break-all; line-height: 1.2;">
                         {% if user.first_name %}
-                            {{ user.first_name }} {{ user.last_name }}
+                        {{ user.first_name }} {{ user.last_name }}
                         {% else %}
-                            {{ user.username }}
+                        {{ user.username }}
                         {% endif %}
                     </h2>
-                    
-                    <!-- 2. Username (Accent Color) -->
+
                     <p class="text-primary mb-2 small text-truncate fw-bold">
                         @{{ user.username }}
                     </p>
 
-                    <!-- 3. Email Badge (Distinct) -->
-                    <div class="d-inline-flex align-items-center px-3 py-1 rounded-pill" 
-                         style="background: rgba(255, 255, 255, 0.1); border: 1px solid var(--border-color); max-width: 100%;">
+                    <div class="d-inline-flex align-items-center px-3 py-1 rounded-pill" style="background: rgba(255, 255, 255, 0.1); border: 1px solid var(--border-color); max-width: 100%;">
                         <i class="fas fa-envelope text-muted me-2 small"></i>
                         <span class="text-white-50 small text-truncate">{{ user.email }}</span>
                     </div>
                 </div>
 
-                <!-- Buttons (Fixed) -->
                 <div class="d-flex gap-2 flex-shrink-0">
                     <a href="{% url 'upload_note' %}" class="btn-brand shadow-sm text-decoration-none btn-sm px-3">
                         <i class="fas fa-plus me-1"></i> Upload
@@ -139,9 +113,7 @@
         </div>
     </div>
 
-    <!-- 2. DETAILED DATA TABLE -->
     <div class="card-modern">
-        <!-- Card Header for Table -->
         <div class="card-header bg-transparent py-3 px-4 border-bottom" style="border-color: var(--border-color);">
             <h5 class="mb-0 fw-bold text-white"><i class="fas fa-table me-2 text-primary"></i>My Uploads Dashboard</h5>
         </div>
@@ -162,16 +134,13 @@
                 <tbody>
                     {% for note in notes %}
                     <tr id="note-row-{{ note.pk }}">
-                        <!-- 1. TITLE -->
                         <td class="ps-4" style="max-width: 250px;">
                             <div class="d-flex align-items-center">
                                 <div class="icon-square me-3 text-primary flex-shrink-0">
                                     <i class="fas fa-file-alt"></i>
                                 </div>
                                 <div style="min-width: 0;">
-                                    <a href="{% url 'note_detail' note.pk %}"
-                                        class="fw-bold text-white text-decoration-none d-block text-truncate hover-warning"
-                                        title="{{ note.title }}">
+                                    <a href="{% url 'note_detail' note.pk %}" class="fw-bold text-white text-decoration-none d-block text-truncate hover-warning" title="{{ note.title }}">
                                         {{ note.title }}
                                     </a>
                                     <small class="text-white opacity-50">ID: #{{ note.pk }}</small>
@@ -179,21 +148,15 @@
                             </div>
                         </td>
 
-                        <!-- 2. FILE -->
                         <td>
-                            <a href="{{ note.file.url }}" target="_blank"
-                                class="btn btn-sm btn-outline-light rounded-pill px-3"
-                                style="border-color: var(--border-color); color: #e0e0e0;">
+                            <a href="{{ note.file.url }}" target="_blank" class="btn btn-sm btn-outline-light rounded-pill px-3" style="border-color: var(--border-color); color: #e0e0e0;">
                                 <i class="fas fa-download me-1"></i> File
                             </a>
                         </td>
 
-                        <!-- 3. COURSE & TAGS -->
                         <td style="max-width: 200px;">
                             {% if note.course %}
-                            <!-- Added word-break to prevent badges from overflowing -->
-                            <span class="badge bg-dark border border-secondary text-white fw-normal mb-1 text-wrap"
-                                style="word-break: break-word; text-align: left; background-color: #2c2c2c !important;">
+                            <span class="badge bg-dark border border-secondary text-white fw-normal mb-1 text-wrap" style="word-break: break-word; text-align: left; background-color: #2c2c2c !important;">
                                 {{ note.course }}
                             </span>
                             <br>
@@ -208,14 +171,12 @@
                             {% endif %}
                         </td>
 
-                        <!-- 4. DESCRIPTION -->
                         <td style="max-width: 250px;">
                             <div class="text-truncate text-white opacity-50 small" title="{{ note.description }}">
                                 {{ note.description|default:"No description" }}
                             </div>
                         </td>
 
-                        <!-- 5. STATS -->
                         <td>
                             <div class="d-flex flex-column small">
                                 <span class="text-white fw-bold mb-1">
@@ -227,25 +188,20 @@
                             </div>
                         </td>
 
-                        <!-- 6. DATE -->
                         <td class="small text-white opacity-50">
                             {{ note.created_at|date:"M d, Y" }}<br>
                             {{ note.created_at|date:"h:i A" }}
                         </td>
 
-                        <!-- 7. ACTIONS -->
                         <td class="pe-4 text-end">
                             <div class="btn-group">
-                                <a href="{% url 'edit_note' note.pk %}" class="btn btn-sm btn-outline-light"
-                                    style="border-color: var(--border-color);" title="Edit">
+                                <a href="{% url 'edit_note' note.pk %}" class="btn btn-sm btn-outline-light" style="border-color: var(--border-color);" title="Edit">
                                     <i class="fas fa-pencil-alt text-primary"></i>
                                 </a>
-                                
-                                <!-- AJAX Deletion Form -->
+
                                 <form action="{% url 'delete_note' note.pk %}" method="post" class="d-inline ajax-delete-form">
                                     {% csrf_token %}
-                                    <button type="submit" class="btn btn-sm btn-outline-light"
-                                        style="border-color: var(--border-color);" title="Delete">
+                                    <button type="submit" class="btn btn-sm btn-outline-light" style="border-color: var(--border-color);" title="Delete">
                                         <i class="fas fa-trash text-danger"></i>
                                     </button>
                                 </form>
@@ -269,23 +225,20 @@
             </table>
         </div>
 
-        <div class="card-footer bg-transparent py-3 small text-white opacity-50 text-center"
-            style="border-top: 1px solid var(--border-color);">
+        <div class="card-footer bg-transparent py-3 small text-white opacity-50 text-center" style="border-top: 1px solid var(--border-color);">
             Showing <span id="notesCount">{{ notes.count }}</span> uploaded note{{ notes.count|pluralize }}
         </div>
     </div>
 </div>
 
 <script>
-    // AJAX Delete Logic
     document.addEventListener('DOMContentLoaded', function() {
         const table = document.getElementById('notesTable');
-        
+
         table.addEventListener('submit', function(e) {
-            // Event delegation for forms inside the table
             if (e.target.classList.contains('ajax-delete-form')) {
                 e.preventDefault();
-                
+
                 if (!confirm('Delete this note permanently? This cannot be undone.')) {
                     return;
                 }
@@ -293,42 +246,40 @@
                 const form = e.target;
                 const row = form.closest('tr');
                 const btn = form.querySelector('button');
-                
-                // Disable button to prevent double clicks
+
                 btn.disabled = true;
 
                 fetch(form.action, {
-                    method: 'POST',
-                    body: new FormData(form),
-                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        // 1. Animate Out
-                        row.classList.add('fade-out');
-                        
-                        // 2. Remove after animation
-                        setTimeout(() => {
-                            row.remove();
-                            // Update Count
-                            const countSpan = document.getElementById('notesCount');
-                            if(countSpan) {
-                                let c = parseInt(countSpan.innerText) || 0;
-                                countSpan.innerText = Math.max(0, c - 1);
-                            }
-                        }, 500);
+                        method: 'POST',
+                        body: new FormData(form),
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            row.classList.add('fade-out');
 
-                        showToast('Note deleted successfully', 'success');
-                    } else {
-                        alert(data.message || 'Error deleting note.');
+                            setTimeout(() => {
+                                row.remove();
+                                const countSpan = document.getElementById('notesCount');
+                                if (countSpan) {
+                                    let c = parseInt(countSpan.innerText) || 0;
+                                    countSpan.innerText = Math.max(0, c - 1);
+                                }
+                            }, 500);
+
+                            showToast('Note deleted successfully', 'success');
+                        } else {
+                            alert(data.message || 'Error deleting note.');
+                            btn.disabled = false;
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err);
                         btn.disabled = false;
-                    }
-                })
-                .catch(err => {
-                    console.error(err);
-                    btn.disabled = false;
-                });
+                    });
             }
         });
     });
