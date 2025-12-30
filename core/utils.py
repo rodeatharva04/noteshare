@@ -5,15 +5,7 @@ import sib_api_v3_sdk
 from sib_api_v3_sdk.rest import ApiException
 import random
 
-# ==========================
-# 1. MEMORY MANAGEMENT UTILS
-# ==========================
-
 def delete_file_if_exists(file_field):
-    """
-    Physically deletes a file from the media folder.
-    Used by models.py signals to keep storage clean.
-    """
     if file_field and file_field.name:
         if os.path.isfile(file_field.path):
             try:
@@ -22,20 +14,12 @@ def delete_file_if_exists(file_field):
             except Exception as e:
                 print(f"❌ Error deleting file: {e}")
 
-# ==========================
-# 2. EMAIL TEMPLATING
-# ==========================
-
 def get_email_html(title, body_content, code=None, footer_text="Happy Learning!"):
-    """
-    Standardized HTML Email Template for ALL emails.
-    """
-    # Define colors based on context (Basic logic)
-    header_color = "#667eea" # Purple default
+    header_color = "#667eea"
     if "Alert" in title or "Delete" in title:
-        header_color = "#d93025" # Red
+        header_color = "#d93025"
     elif "Welcome" in title:
-        header_color = "#0f9d58" # Green
+        header_color = "#0f9d58"
 
     code_block = ""
     if code:
@@ -72,15 +56,7 @@ def get_email_html(title, body_content, code=None, footer_text="Happy Learning!"
     """
     return html
 
-# ==========================
-# 3. THREADED EMAIL SENDER
-# ==========================
-
 def _send_brevo_task(to_email, subject, html_content, name):
-    """
-    The actual worker function that contacts Brevo API.
-    Run this inside a thread to prevent the UI from freezing.
-    """
     configuration = sib_api_v3_sdk.Configuration()
     configuration.api_key['api-key'] = settings.BREVO_API_KEY
     api_instance = sib_api_v3_sdk.TransactionalEmailsApi(sib_api_v3_sdk.ApiClient(configuration))
@@ -97,9 +73,6 @@ def _send_brevo_task(to_email, subject, html_content, name):
         print(f"❌ Email Failed: {e}")
 
 def send_email(to_email, subject, title, body, user_name="User", code=None):
-    """
-    Main function to call from Views. Handles HTML generation and Threading.
-    """
     html_content = get_email_html(title, body, code)
     
     email_thread = threading.Thread(
@@ -109,5 +82,4 @@ def send_email(to_email, subject, title, body, user_name="User", code=None):
     email_thread.start()
 
 def generate_otp():
-    """Generates a 6-digit string for verification codes."""
     return str(random.randint(100000, 999999))
