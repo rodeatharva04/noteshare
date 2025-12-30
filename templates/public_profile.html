@@ -2,10 +2,8 @@
 
 {% block content %}
 <style>
-    /* === Profile Specific Styles === */
     .profile-banner {
         height: 140px;
-        /* Force gradient to persist in light mode */
         background: var(--grad-primary) !important;
         border-bottom: 1px solid var(--border-color);
         border-radius: 16px 16px 0 0;
@@ -15,15 +13,12 @@
         width: 140px;
         height: 140px;
         margin-top: -70px;
-        /* Pull up to overlap banner */
         background: var(--surface-card);
         padding: 5px;
-        /* Gap between image and border */
         border-radius: 50%;
         border: 1px solid var(--border-color);
     }
 
-    /* === FIX: TEXT OVERFLOW HANDLING === */
     .line-clamp-3 {
         display: -webkit-box;
         -webkit-line-clamp: 3;
@@ -36,19 +31,14 @@
     }
 </style>
 
-<!-- 1. PROFILE HEADER CARD -->
 <div class="card-modern mb-5">
     <div class="profile-banner"></div>
     <div class="card-body text-center pt-0 pb-5">
-
-        <!-- Avatar Section -->
         <div class="d-flex justify-content-center mb-3">
             <div class="profile-avatar-container shadow-lg">
                 {% if profile_user.profile.profile_pic %}
-                <img src="{{ profile_user.profile.profile_pic.url }}" class="rounded-circle w-100 h-100"
-                    style="object-fit: cover;">
+                <img src="{{ profile_user.profile.profile_pic.url }}" class="rounded-circle w-100 h-100" style="object-fit: cover;">
                 {% else %}
-                <!-- Fallback Icon -->
                 <div class="rounded-circle w-100 h-100 d-flex align-items-center justify-content-center bg-dark">
                     <i class="fas fa-user-circle fa-5x text-white opacity-25"></i>
                 </div>
@@ -56,8 +46,6 @@
             </div>
         </div>
 
-        <!-- Name & Handle -->
-        <!-- Added word-break: break-all to force wrapping of long names -->
         <h2 class="fw-bold text-white mb-0 px-3" style="word-break: break-all;">
             {% if profile_user.first_name %}
                 {{ profile_user.first_name }} {{ profile_user.last_name }}
@@ -65,52 +53,41 @@
                 {{ profile_user.username }}
             {% endif %}
         </h2>
-        
+
         <p class="text-primary mb-4 px-3" style="word-break: break-all;">
             @{{ profile_user.username }}
         </p>
 
-        <!-- Bio -->
         <p class="text-muted mb-4 mx-auto" style="max-width: 600px; font-size: 0.95rem; word-break: break-word;">
             {{ profile_user.profile.bio|default:"No bio available." }}
         </p>
 
-        <!-- Contact & Meta Actions -->
         <div class="d-flex flex-wrap justify-content-center gap-3">
-            <!-- Email Group -->
             <div class="btn-group shadow-sm" role="group">
-                <a href="mailto:{{ profile_user.email }}" class="btn btn-outline-light d-flex align-items-center gap-2"
-                    style="border-color: var(--border-color); color: #e0e0e0;">
+                <a href="mailto:{{ profile_user.email }}" class="btn btn-outline-light d-flex align-items-center gap-2" style="border-color: var(--border-color); color: #e0e0e0;">
                     <i class="fas fa-envelope text-primary"></i>
                     <span id="emailText">{{ profile_user.email }}</span>
                 </a>
-                <button type="button" class="btn btn-outline-light" onclick="copyEmailToClipboard()"
-                    style="border-color: var(--border-color); color: #a0a0a0;" title="Copy Email">
+                <button type="button" class="btn btn-outline-light" onclick="copyEmailToClipboard()" style="border-color: var(--border-color); color: #a0a0a0;" title="Copy Email">
                     <i class="fas fa-copy" id="copyIcon"></i>
                 </button>
             </div>
 
-            <!-- Join Date Pill -->
-            <div class="d-flex align-items-center px-4 py-2 rounded-pill"
-                style="background: var(--surface-input); border: 1px solid var(--border-color);">
+            <div class="d-flex align-items-center px-4 py-2 rounded-pill" style="background: var(--surface-input); border: 1px solid var(--border-color);">
                 <i class="fas fa-calendar-alt text-success me-2"></i>
                 <span class="text-white opacity-75 small">Joined {{ profile_user.date_joined|date:"M Y" }}</span>
             </div>
         </div>
 
-        <!-- Stats Divider -->
-        <div class="d-flex justify-content-center mt-4 pt-4 w-50 mx-auto"
-            style="border-top: 1px solid var(--border-color);">
+        <div class="d-flex justify-content-center mt-4 pt-4 w-50 mx-auto" style="border-top: 1px solid var(--border-color);">
             <div class="text-center">
                 <h4 class="fw-bold text-white mb-0">{{ user_notes.count }}</h4>
-                <small class="text-white opacity-50 text-uppercase fw-bold"
-                    style="font-size: 0.7rem; letter-spacing: 1px;">Total Uploads</small>
+                <small class="text-white opacity-50 text-uppercase fw-bold" style="font-size: 0.7rem; letter-spacing: 1px;">Total Uploads</small>
             </div>
         </div>
     </div>
 </div>
 
-<!-- 2. UPLOADED NOTES SECTION -->
 <h4 class="mb-4 fw-bold text-white">
     <i class="fas fa-folder-open text-warning me-2"></i>Uploaded Notes
 </h4>
@@ -118,43 +95,31 @@
 <div class="row g-4">
     {% for note in user_notes %}
     <div class="col-md-6 col-lg-4">
-        <!-- overflow: hidden prevents content sticking out -->
         <div class="card-modern h-100 d-flex flex-column" style="overflow: hidden;">
-
             <div class="card-body p-4">
-                <!-- Title -->
                 <h5 class="card-title fw-bold text-truncate mb-2" title="{{ note.title }}">
-                    <a href="{% url 'note_detail' note.pk %}"
-                        class="text-decoration-none text-white hover-warning transition-all">
+                    <a href="{% url 'note_detail' note.pk %}" class="text-decoration-none text-white hover-warning transition-all">
                         {{ note.title }}
                     </a>
                 </h5>
 
-                <!-- Course -->
-                <p class="card-subtitle mb-3 small text-truncate d-block"
-                    style="color: var(--brand-accent); max-width: 100%;">
+                <p class="card-subtitle mb-3 small text-truncate d-block" style="color: var(--brand-accent); max-width: 100%;">
                     <i class="fas fa-book me-1"></i> {{ note.course|default:"General" }}
                 </p>
 
-                <!-- Description -->
                 <p class="card-text text-white opacity-75 small line-clamp-3 mb-4">
                     {{ note.description|default:"No description provided." }}
                 </p>
 
-                <!-- Button -->
                 <div class="mt-auto">
-                    <a href="{% url 'note_detail' note.pk %}"
-                        class="btn btn-sm btn-outline-light w-100 rounded-pill shadow-sm"
-                        style="border-color: var(--border-color); color: #e0e0e0;">
+                    <a href="{% url 'note_detail' note.pk %}" class="btn btn-sm btn-outline-light w-100 rounded-pill shadow-sm" style="border-color: var(--border-color); color: #e0e0e0;">
                         <i class="fas fa-file-alt me-1"></i> View Document
                     </a>
                 </div>
             </div>
 
-            <!-- Footer Stats -->
             <div class="card-footer bg-transparent py-3 px-4" style="border-top: 1px solid var(--border-color);">
                 <div class="d-flex justify-content-between align-items-center text-white opacity-75 small">
-
                     <div class="d-flex gap-3">
                         <span class="text-warning fw-bold">
                             {{ note.avg_rating|default:"0.0" }} <i class="fas fa-star"></i>
@@ -163,11 +128,9 @@
                             <i class="fas fa-comment me-1"></i> {{ note.comments.count }}
                         </span>
                     </div>
-
                     <div>
                         <span><i class="fas fa-eye me-1"></i> {{ note.view_count }}</span>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -182,24 +145,20 @@
     {% endfor %}
 </div>
 
-<!-- JavaScript (Updated for Global Toast) -->
 <script>
     function copyEmailToClipboard() {
         const email = document.getElementById('emailText').innerText;
         navigator.clipboard.writeText(email).then(function () {
-            // Visual feedback on the button
             const icon = document.getElementById('copyIcon');
             icon.classList.remove('fa-copy');
             icon.classList.add('fa-check', 'text-success');
             
-            // Trigger Global Toast
             if (typeof showToast === "function") {
                 showToast("Email copied to clipboard!", "success");
             } else {
                 alert("Email copied!");
             }
 
-            // Revert icon after 2 seconds
             setTimeout(() => {
                 icon.classList.remove('fa-check', 'text-success');
                 icon.classList.add('fa-copy');
@@ -212,5 +171,4 @@
         });
     }
 </script>
-
 {% endblock %}
