@@ -2,10 +2,7 @@
 
 {% block content %}
 <div class="container d-flex justify-content-center align-items-center my-4">
-   
     <div class="card-modern" style="max-width: 700px; width: 100%;">
-
-       
         <div class="card-header-modern">
             <div class="mb-2">
                 {% if form.instance.pk %}
@@ -21,42 +18,33 @@
         </div>
 
         <div class="card-body p-4 p-md-5">
-          
             <form method="post" id="noteForm" enctype="multipart/form-data" novalidate>
                 {% csrf_token %}
 
-              
                 <div class="mb-4">
-                    <label class="small text-white opacity-75 text-uppercase fw-bold mb-1">Title <span
-                            class="text-danger">*</span></label>
+                    <label class="small text-white opacity-75 text-uppercase fw-bold mb-1">Title <span class="text-danger">*</span></label>
                     <div class="input-group">
                         <span class="input-group-text" style="border-color: var(--border-color);">
                             <i class="fas fa-heading text-primary"></i>
                         </span>
-                        <input type="text" name="title" class="form-control fw-bold"
-                            placeholder="e.g. Calculus 101 Notes" value="{{ form.title.value|default:'' }}" required>
+                        <input type="text" name="title" class="form-control fw-bold" placeholder="e.g. Calculus 101 Notes" value="{{ form.title.value|default:'' }}" required>
                     </div>
                 </div>
 
-            
                 <div class="mb-4">
-                    <label class="small text-white opacity-75 text-uppercase fw-bold mb-1">Note File <span
-                            class="text-danger">*</span></label>
+                    <label class="small text-white opacity-75 text-uppercase fw-bold mb-1">Note File <span class="text-danger">*</span></label>
                     <div class="input-group">
                         <input type="file" name="file" class="form-control" id="fileInput" {% if not form.instance.pk %}required{% endif %}>
-                        <label class="input-group-text" for="fileInput" style="border-color: var(--border-color);"><i
-                                class="fas fa-file"></i></label>
+                        <label class="input-group-text" for="fileInput" style="border-color: var(--border-color);"><i class="fas fa-file"></i></label>
                     </div>
                     <div class="form-text text-white-50 small mt-1">
                         Max size: <strong>35 MB</strong>. Supported: PDF, Images, Video, Audio, Code.
                     </div>
 
-                   
                     {% if form.instance.pk and form.instance.file %}
                     <small class="text-white opacity-75 d-block mt-2">
                         <i class="fas fa-check-circle text-success me-1"></i> Currently:
-                        <a href="{{ form.instance.file.url }}" target="_blank"
-                            class="text-decoration-none text-white fw-bold hover-warning">
+                        <a href="{{ form.instance.file.url }}" target="_blank" class="text-decoration-none text-white fw-bold hover-warning">
                             {{ form.instance.file.name }}
                         </a>
                     </small>
@@ -64,41 +52,31 @@
                 </div>
 
                 <hr class="my-4" style="border-color: var(--border-color); opacity: 0.5;">
-                <h6 class="text-white fw-bold mb-3"><i class="fas fa-sliders-h me-2 text-primary"></i>Optional Details
-                </h6>
+                <h6 class="text-white fw-bold mb-3"><i class="fas fa-sliders-h me-2 text-primary"></i>Optional Details</h6>
 
                 <div class="row">
-                    
                     <div class="col-md-6 mb-3">
                         <label class="small text-white opacity-75 text-uppercase fw-bold mb-1">Course Name</label>
                         <div class="input-group">
-                            <span class="input-group-text" style="border-color: var(--border-color);"><i
-                                    class="fas fa-book"></i></span>
-                            <input type="text" name="course" class="form-control" placeholder="Math, Science..."
-                                value="{{ form.course.value|default:'' }}">
+                            <span class="input-group-text" style="border-color: var(--border-color);"><i class="fas fa-book"></i></span>
+                            <input type="text" name="course" class="form-control" placeholder="Math, Science..." value="{{ form.course.value|default:'' }}">
                         </div>
                     </div>
 
-                  
                     <div class="col-md-6 mb-3">
                         <label class="small text-white opacity-75 text-uppercase fw-bold mb-1">Tags</label>
                         <div class="input-group">
-                            <span class="input-group-text" style="border-color: var(--border-color);"><i
-                                    class="fas fa-tags"></i></span>
-                            <input type="text" name="tags" class="form-control" placeholder="formulas, exam-prep"
-                                value="{{ form.tags.value|default:'' }}">
+                            <span class="input-group-text" style="border-color: var(--border-color);"><i class="fas fa-tags"></i></span>
+                            <input type="text" name="tags" class="form-control" placeholder="formulas, exam-prep" value="{{ form.tags.value|default:'' }}">
                         </div>
                     </div>
                 </div>
 
-               
                 <div class="mb-4">
                     <label class="small text-white opacity-75 text-uppercase fw-bold mb-1">Description</label>
-                    <textarea name="description" class="form-control" rows="4"
-                        placeholder="Briefly describe what's in this note...">{{ form.description.value|default:'' }}</textarea>
+                    <textarea name="description" class="form-control" rows="4" placeholder="Briefly describe what's in this note...">{{ form.description.value|default:'' }}</textarea>
                 </div>
 
-              
                 <div class="d-grid mt-4">
                     <button type="submit" id="submitBtn" class="btn-brand shadow-lg fw-bold">
                         {% if form.instance.pk %}Save Changes{% else %}Upload Note{% endif %}
@@ -107,22 +85,17 @@
             </form>
         </div>
 
-      
         <div class="card-footer bg-transparent py-3" style="border-top: 1px solid var(--border-color);">
             <div class="d-flex justify-content-between align-items-center text-muted small px-3">
-    
                 <div class="d-flex align-items-center me-3" style="min-width: 0; flex: 1;">
                     {% if user.profile and user.profile.profile_pic %}
-                    <img src="{{ user.profile.profile_pic.url }}"
-                        class="rounded-circle me-2 border border-secondary flex-shrink-0" width="30" height="30"
-                        style="object-fit: cover;">
+                    <img src="{{ user.profile.profile_pic.url }}" class="rounded-circle me-2 border border-secondary flex-shrink-0" width="30" height="30" style="object-fit: cover;">
                     {% else %}
                     <i class="fas fa-user-circle fa-lg me-2 flex-shrink-0"></i>
                     {% endif %}
                     <span class="fw-bold text-truncate">{{ user.username }}</span>
                 </div>
 
-               
                 <div class="flex-shrink-0">
                     <i class="fas fa-calendar-alt me-1"></i>
                     {% now "M d, Y" %}
@@ -133,14 +106,13 @@
 </div>
 
 <script>
-    document.getElementById('noteForm').addEventListener('submit', async function (e) {
+    document.getElementById('noteForm').addEventListener('submit', async function(e) {
         e.preventDefault();
 
         const btn = document.getElementById('submitBtn');
         const originalText = btn.innerText;
         const fileInput = document.getElementById('fileInput');
 
-       
         const title = this.querySelector('input[name="title"]').value;
         const course = this.querySelector('input[name="course"]').value;
         const tags = this.querySelector('input[name="tags"]').value;
@@ -150,17 +122,17 @@
         if (course.length > 30) { showToast("Course max 30 chars.", "error"); return; }
         if (tags.length > 50) { showToast("Tags max 50 chars.", "error"); return; }
         if (desc.length > 1000) { showToast("Description max 1000 chars.", "error"); return; }
-       
+
         if (fileInput.files.length > 0) {
-            const fileSize = fileInput.files[0].size; 
-            const maxSize = 35 * 1024 * 1024; 
+            const fileSize = fileInput.files[0].size;
+            const maxSize = 35 * 1024 * 1024;
 
             if (fileSize > maxSize) {
                 showToast("File is too large! Max size is 35MB.", "error");
-                return; 
+                return;
             }
         }
-       
+
         let loadingText = '<i class="fas fa-spinner fa-spin me-2"></i> Saving...';
         if (fileInput.files.length > 0) {
             loadingText = '<i class="fas fa-cloud-upload-alt fa-bounce me-2"></i> Uploading... (Do not close)';
@@ -170,27 +142,25 @@
         btn.innerHTML = loadingText;
 
         try {
-            
             const res = await fetch(window.location.href, {
                 method: 'POST',
                 body: new FormData(this),
-                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
             });
             const data = await res.json();
 
-           
             if (data.status === 'success') {
                 showToast(data.message || 'Saved successfully!', 'success');
                 setTimeout(() => {
                     window.location.href = data.redirect_url || data.next_url;
                 }, 1000);
             } else {
-               
                 let errorMsg = "Please fix the errors.";
                 if (data.errors) {
                     const keys = Object.keys(data.errors);
                     if (keys.length > 0) {
-                        
                         const fieldName = keys[0].charAt(0).toUpperCase() + keys[0].slice(1);
                         errorMsg = `${fieldName}: ${data.errors[keys[0]][0]}`;
                     }
