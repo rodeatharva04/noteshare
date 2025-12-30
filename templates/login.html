@@ -2,7 +2,7 @@
 
 {% block content %}
 <style>
-    /* Fix Chrome Autofill to match Dark Theme Variables */
+    
     input:-webkit-autofill,
     input:-webkit-autofill:hover,
     input:-webkit-autofill:focus,
@@ -39,7 +39,7 @@
                 </div>
                 {% endif %}
 
-                <!-- Username -->
+              
                 <div class="mb-4">
                     <label for="id_username" class="small text-white opacity-75 text-uppercase fw-bold mb-1">
                         Username
@@ -64,7 +64,7 @@
                     </div>
                 </div>
 
-                <!-- Password -->
+             
                 <div class="mb-4">
                     <label for="id_password" class="small text-white opacity-75 text-uppercase fw-bold mb-1">
                         Password
@@ -89,7 +89,7 @@
                     </div>
                 </div>
 
-                <!-- Login Button -->
+               
                 <div class="d-grid mt-4">
                     <button type="submit" id="loginBtn" class="btn-brand shadow-lg fw-bold">
                         LOGIN
@@ -113,11 +113,10 @@
     </div>
 </div>
 
-<!-- UX Enhancement Script -->
+
 <script>
     document.getElementById('loginForm').addEventListener('submit', function() {
         const btn = document.getElementById('loginBtn');
-        // Visual feedback immediately
         btn.disabled = true;
         btn.innerHTML = '<i class="fas fa-circle-notch fa-spin me-2"></i> Authenticating...';
     });
