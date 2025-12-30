@@ -1,6 +1,5 @@
 {% load static %}
 <!DOCTYPE html>
-
 <html lang="en" data-bs-theme="dark">
 
 <head>
@@ -8,42 +7,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NoteShare</title>
 
-
     <link rel="icon" type="image/png" href="https://img.icons8.com/fluency/48/reading.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
 
-    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
         :root {
-           
             --brand-primary: #667eea;
             --brand-secondary: #764ba2;
             --brand-accent: #00d2ff;
-            
-            
             --color-success: #198754;
             --color-danger: #ef4444;
             --color-warning: #f59e0b;
-
-           
             --grad-primary: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
             --grad-success: linear-gradient(135deg, #42e695 0%, #3bb2b8 100%);
             --grad-danger: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
             --grad-dark: linear-gradient(135deg, #232526 0%, #414345 100%);
-
-            
             --bg-body: #0f1012;
             --surface-card: #1a1b1e;
             --surface-input: #25262b;
             --border-color: #2f3036;
-            
-           
             --text-main: #e0e0e0;
             --text-muted: #a0a0a0;
         }
@@ -51,27 +38,30 @@
         body {
             background-color: var(--bg-body);
             color: var(--text-main);
-            font-family: 'Inter', sans-serif; 
+            font-family: 'Inter', sans-serif;
             display: flex;
             flex-direction: column;
             min-height: 100vh;
         }
 
-        .main-content { flex: 1; }
+        .main-content {
+            flex: 1;
+        }
 
-        a { text-decoration: none; transition: color 0.2s; }
+        a {
+            text-decoration: none;
+            transition: color 0.2s;
+        }
 
-        
         .card-modern {
             background: var(--surface-card);
             border: 1px solid var(--border-color);
             border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             overflow: hidden;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
-        
-     
+
         .card-header-modern {
             padding: 2.5rem 2rem;
             text-align: center;
@@ -79,24 +69,32 @@
             color: white;
             background: var(--grad-primary);
         }
-        .bg-gradient-success { background: var(--grad-success) !important; }
 
-      
-        .form-control, .form-select {
+        .bg-gradient-success {
+            background: var(--grad-success) !important;
+        }
+
+        .form-control,
+        .form-select {
             background-color: var(--surface-input);
             border: 1px solid var(--border-color);
             color: var(--text-main);
             padding: 12px 15px;
             border-radius: 8px;
         }
-        .form-control:focus, .form-select:focus {
+
+        .form-control:focus,
+        .form-select:focus {
             background-color: var(--surface-input);
             border-color: var(--brand-primary);
             box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
             color: white;
         }
-        .form-control::placeholder { color: var(--text-muted); opacity: 0.7; }
-        
+
+        .form-control::placeholder {
+            color: var(--text-muted);
+            opacity: 0.7;
+        }
 
         .input-group-text {
             background-color: var(--surface-input);
@@ -116,16 +114,24 @@
             text-align: center;
             display: inline-block;
         }
-        .btn-brand:hover { opacity: 0.9; color: white; transform: translateY(-1px); }
 
-     
-        .hover-warning:hover { color: var(--color-warning) !important; }
-        .text-primary { color: var(--brand-primary) !important; }
+        .btn-brand:hover {
+            opacity: 0.9;
+            color: white;
+            transform: translateY(-1px);
+        }
 
+        .hover-warning:hover {
+            color: var(--color-warning) !important;
+        }
+
+        .text-primary {
+            color: var(--brand-primary) !important;
+        }
 
         .navbar-glass {
             background: rgba(26, 27, 30, 0.85);
-            backdrop-filter: blur(12px);         
+            backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--border-color);
             padding: 1rem 0;
@@ -141,13 +147,13 @@
             letter-spacing: -0.5px;
         }
 
-        
         .search-input {
             background: var(--surface-input) !important;
             border-radius: 50px 0 0 50px !important;
             border-right: none;
             color: white !important;
         }
+
         .search-btn {
             background: var(--surface-input);
             border: 1px solid var(--border-color);
@@ -156,23 +162,49 @@
             border-radius: 0 50px 50px 0 !important;
             padding-right: 20px;
         }
-        .search-btn:hover { color: white; }
 
+        .search-btn:hover {
+            color: white;
+        }
 
         .social-btn {
-            display: inline-flex; align-items: center; justify-content: center;
-            width: 45px; height: 45px; border-radius: 50%; margin: 0 6px;
-            color: white !important; background-color: rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease; position: relative; z-index: 100;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            margin: 0 6px;
+            color: white !important;
+            background-color: rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 100;
         }
-        .social-btn:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
-        .social-btn.gmail:hover { background-color: #ea4335; }
-        .social-btn.linkedin:hover { background-color: #0077b5; }
-        .social-btn.github:hover { background-color: #333333; }
-        .social-btn.leetcode:hover { background-color: #ffa116; }
+
+        .social-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .social-btn.gmail:hover {
+            background-color: #ea4335;
+        }
+
+        .social-btn.linkedin:hover {
+            background-color: #0077b5;
+        }
+
+        .social-btn.github:hover {
+            background-color: #333333;
+        }
+
+        .social-btn.leetcode:hover {
+            background-color: #ffa116;
+        }
 
         footer {
-            background-color: #050505; 
+            background-color: #050505;
             border-top: 1px solid var(--border-color);
         }
     </style>
@@ -180,12 +212,8 @@
 
 <body>
 
-    
-    <div id="global-toast" 
-         style="position: fixed; top: 90px; right: 20px; z-index: 9999; opacity: 0; transition: opacity 0.3s ease-in-out; pointer-events: none;">
-        <div class="card-modern px-4 py-3 d-flex align-items-center gap-3 shadow-lg"
-             style="background: var(--surface-card); border-left: 4px solid var(--color-success);"
-             id="global-toast-card">
+    <div id="global-toast" style="position: fixed; top: 90px; right: 20px; z-index: 9999; opacity: 0; transition: opacity 0.3s ease-in-out; pointer-events: none;">
+        <div class="card-modern px-4 py-3 d-flex align-items-center gap-3 shadow-lg" style="background: var(--surface-card); border-left: 4px solid var(--color-success);" id="global-toast-card">
             <i class="fas fa-check-circle text-success fa-lg" id="global-toast-icon"></i>
             <span class="text-white fw-bold" id="global-toast-msg">Success</span>
         </div>
@@ -202,12 +230,10 @@
             </button>
 
             <div class="collapse navbar-collapse" id="navbarNav">
-                
                 {% if user.is_authenticated %}
                 <form class="d-flex mx-auto w-50 my-2 my-lg-0" action="{% url 'home' %}" method="GET">
                     <div class="input-group">
-                        <input class="form-control search-input" type="search" name="q"
-                            placeholder="Search notes..." value="{{ query|default:'' }}">
+                        <input class="form-control search-input" type="search" name="q" placeholder="Search notes..." value="{{ query|default:'' }}">
                         <button class="btn search-btn" type="submit"><i class="fas fa-search"></i></button>
                     </div>
                 </form>
@@ -215,52 +241,45 @@
 
                 <ul class="navbar-nav ms-auto align-items-center">
                     {% if user.is_authenticated %}
-                        <li class="nav-item">
-                            <a class="nav-link text-white mx-2 hover-warning" href="{% url 'upload_note' %}">
-                                <i class="fas fa-cloud-upload-alt me-1"></i> Upload
-                            </a>
-                        </li>
-                        <li class="nav-item dropdown">
-                           
-                            <a class="nav-link text-white d-flex align-items-center gap-2 dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                {% if user.profile.profile_pic %}
-                                <img src="{{ user.profile.profile_pic.url }}"
-                                    class="rounded-circle border border-2 border-secondary" width="35" height="35"
-                                    style="object-fit: cover;">
-                                {% else %}
-                                <i class="fas fa-user-circle fa-xl text-white"></i>
-                                {% endif %}
-                                <span class="d-lg-none text-truncate" style="max-width: 150px;">Profile</span>
-                            </a>
-                           
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="{% url 'profile' %}">My Profile</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li>
-                                    <form action="{% url 'logout' %}" method="post">
-                                        {% csrf_token %}
-                                        <button type="submit" class="dropdown-item text-danger">Logout</button>
-                                    </form>
-                                </li>
-                            </ul>
-                        </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white mx-2 hover-warning" href="{% url 'upload_note' %}">
+                            <i class="fas fa-cloud-upload-alt me-1"></i> Upload
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link text-white d-flex align-items-center gap-2 dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            {% if user.profile.profile_pic %}
+                            <img src="{{ user.profile.profile_pic.url }}" class="rounded-circle border border-2 border-secondary" width="35" height="35" style="object-fit: cover;">
+                            {% else %}
+                            <i class="fas fa-user-circle fa-xl text-white"></i>
+                            {% endif %}
+                            <span class="d-lg-none text-truncate" style="max-width: 150px;">Profile</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="{% url 'profile' %}">My Profile</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form action="{% url 'logout' %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" class="dropdown-item text-danger">Logout</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
                     {% else %}
-                        <!-- Unauthenticated Links -->
-                        <li class="nav-item">
-                            <a class="btn btn-sm btn-brand text-white mx-2 px-3" href="{% url 'login' %}">Login</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="btn btn-sm btn-brand text-white mx-2 px-3" href="{% url 'register' %}">Sign Up</a>
-                        </li>
+                    <li class="nav-item">
+                        <a class="btn btn-sm btn-brand text-white mx-2 px-3" href="{% url 'login' %}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-sm btn-brand text-white mx-2 px-3" href="{% url 'register' %}">Sign Up</a>
+                    </li>
                     {% endif %}
                 </ul>
             </div>
         </div>
     </nav>
 
- 
     <div class="container main-content py-5">
-       
         {% if messages %}
             {% for message in messages %}
             <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm rounded-3 border-0 mb-4" role="alert">
@@ -274,12 +293,9 @@
         {% endblock %}
     </div>
 
-
     <footer class="text-center text-lg-start pt-5 mt-5">
         <div class="container pb-4">
             <div class="row align-items-center gy-4">
-                
-          
                 <div class="col-md-6 text-center text-md-start">
                     <h5 class="text-uppercase fw-bold text-white mb-2">NoteShare</h5>
                     <p class="small mb-0 text-white-50">
@@ -288,13 +304,10 @@
                     </p>
                 </div>
 
-           
                 <div class="col-md-6 text-center text-md-end">
                     <span class="d-block d-md-inline mb-3 mb-md-0 me-md-3 text-white fw-bold small text-uppercase">
                         Connect:
                     </span>
-
-                    <!-- Social Buttons -->
                     <a href="mailto:rodeatharva2@gmail.com" class="social-btn gmail" title="Send Email">
                         <i class="fas fa-envelope"></i>
                     </a>
@@ -308,22 +321,17 @@
                         <i class="fas fa-laptop-code"></i>
                     </a>
                 </div>
-
             </div>
         </div>
 
-        <!-- Bottom Bar -->
         <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.3);">
             <small class="text-white-50">Designed with Django &amp; Bootstrap 5</small>
         </div>
     </footer>
 
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    
     <script>
-       
         function getCookie(name) {
             let cookieValue = null;
             if (document.cookie && document.cookie !== '') {
@@ -339,17 +347,14 @@
             return cookieValue;
         }
 
-        
         function showToast(message, type = 'success') {
             const toast = document.getElementById('global-toast');
             const toastCard = document.getElementById('global-toast-card');
             const toastIcon = document.getElementById('global-toast-icon');
             const toastMsg = document.getElementById('global-toast-msg');
 
-           
             toastMsg.textContent = message;
 
-           
             if (type === 'error') {
                 toastCard.style.borderLeftColor = 'var(--color-danger)';
                 toastIcon.className = 'fas fa-exclamation-circle text-danger fa-lg';
@@ -358,10 +363,8 @@
                 toastIcon.className = 'fas fa-check-circle text-success fa-lg';
             }
 
-           
             toast.style.opacity = '1';
             
-           
             setTimeout(() => {
                 toast.style.opacity = '0';
             }, 3000);
