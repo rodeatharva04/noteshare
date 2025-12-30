@@ -2,7 +2,6 @@
 
 {% block content %}
 <style>
-    
     input:-webkit-autofill,
     input:-webkit-autofill:hover,
     input:-webkit-autofill:focus,
@@ -16,8 +15,6 @@
 
 <div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
     <div class="card-modern" style="max-width: 450px; width: 100%;">
-
-        <!-- Header -->
         <div class="card-header-modern">
             <div class="mb-2">
                 <i class="fas fa-fingerprint fa-3x text-white opacity-75"></i>
@@ -30,7 +27,6 @@
             <form method="post" autocomplete="off" id="loginForm">
                 {% csrf_token %}
 
-                <!-- Non-field Errors -->
                 {% if form.non_field_errors %}
                 <div class="alert alert-danger py-2 small shadow-sm mb-4 border-0">
                     {% for error in form.non_field_errors %}
@@ -39,7 +35,6 @@
                 </div>
                 {% endif %}
 
-              
                 <div class="mb-4">
                     <label for="id_username" class="small text-white opacity-75 text-uppercase fw-bold mb-1">
                         Username
@@ -48,23 +43,15 @@
                         <span class="input-group-text" style="border-color: var(--border-color);">
                             <i class="fas fa-user text-primary"></i>
                         </span>
-                        <input type="text"
-                               id="id_username"
-                               name="username"
-                               class="form-control"
-                               placeholder="Enter username"
-                               required>
+                        <input type="text" id="id_username" name="username" class="form-control" placeholder="Enter username" required>
                     </div>
-
                     <div class="text-end mt-2">
-                        <a href="{% url 'forgot_username' %}"
-                           class="small text-decoration-none text-white-50 hover-warning">
+                        <a href="{% url 'forgot_username' %}" class="small text-decoration-none text-white-50 hover-warning">
                             Forgot Username?
                         </a>
                     </div>
                 </div>
 
-             
                 <div class="mb-4">
                     <label for="id_password" class="small text-white opacity-75 text-uppercase fw-bold mb-1">
                         Password
@@ -73,23 +60,15 @@
                         <span class="input-group-text" style="border-color: var(--border-color);">
                             <i class="fas fa-lock text-primary"></i>
                         </span>
-                        <input type="password"
-                               id="id_password"
-                               name="password"
-                               class="form-control"
-                               placeholder="••••••••"
-                               required>
+                        <input type="password" id="id_password" name="password" class="form-control" placeholder="••••••••" required>
                     </div>
-
                     <div class="text-end mt-2">
-                        <a href="{% url 'forgot_password' %}"
-                           class="small text-decoration-none text-white-50 hover-warning">
+                        <a href="{% url 'forgot_password' %}" class="small text-decoration-none text-white-50 hover-warning">
                             Forgot Password?
                         </a>
                     </div>
                 </div>
 
-               
                 <div class="d-grid mt-4">
                     <button type="submit" id="loginBtn" class="btn-brand shadow-lg fw-bold">
                         LOGIN
@@ -98,21 +77,16 @@
             </form>
         </div>
 
-        <!-- Footer -->
-        <div class="card-footer bg-transparent text-center py-4"
-             style="border-top: 1px solid var(--border-color);">
+        <div class="card-footer bg-transparent text-center py-4" style="border-top: 1px solid var(--border-color);">
             <p class="small text-white-50 mb-0">
                 Don't have an account?
-                <a href="{% url 'register' %}"
-                   class="fw-bold text-decoration-none"
-                   style="color: var(--brand-primary);">
+                <a href="{% url 'register' %}" class="fw-bold text-decoration-none" style="color: var(--brand-primary);">
                     Create Account
                 </a>
             </p>
         </div>
     </div>
 </div>
-
 
 <script>
     document.getElementById('loginForm').addEventListener('submit', function() {
