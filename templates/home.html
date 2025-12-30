@@ -2,7 +2,7 @@
 
 {% block content %}
 <style>
-    /* === Page Specific Utility to prevent overflow === */
+   
     .line-clamp-3 {
         display: -webkit-box;
         -webkit-line-clamp: 3;
@@ -15,7 +15,7 @@
         word-break: break-word;
     }
 
-    /* === Custom Dropdown Styles to match inputs === */
+   
     .sort-dropdown-btn {
         background-color: var(--surface-input);
         border: 1px solid var(--border-color);
@@ -32,7 +32,7 @@
         box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.25);
     }
 
-    /* Style the dropdown menu items */
+   
     .dropdown-item {
         color: var(--text-main);
         padding: 10px 20px;
@@ -52,7 +52,7 @@
         color: white;
     }
     
-    /* Transition for AJAX replacement */
+   
     #ajax-content-wrapper {
         transition: opacity 0.2s ease-in-out;
     }
@@ -64,35 +64,35 @@
 
 <div class="container py-4">
     
-    <!-- Wrapper for AJAX Replacement -->
+   
     <div id="ajax-content-wrapper">
         
-        <!-- Header & Sort -->
+       
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="fw-bold mb-0">
                 <i class="fas fa-globe-americas me-2 text-primary"></i>
                 <span class="text-white">Explore Notes</span>
             </h2>
 
-            <!-- SORT FORM -->
+           
             <form method="get" id="sortForm" class="d-flex align-items-center" onsubmit="return false;">
 
-                <!-- 1. Keep the Search Query if it exists -->
+               
                 {% if query %}
                 <input type="hidden" name="q" value="{{ query }}">
                 {% endif %}
 
-                <!-- 2. Hidden Input to store the Sort Value -->
+                
                 <input type="hidden" name="sort" id="sortInput" value="{{ sort_by|default:'recent' }}">
 
-                <!-- 3. Bootstrap Dropdown (Replaces <select>) -->
+               
                 <div class="dropdown">
-                    <!-- Toggle Button -->
+                    
                     <button
                         class="btn sort-dropdown-btn rounded-pill px-4 py-2 dropdown-toggle d-flex align-items-center gap-2 shadow-sm"
                         type="button" data-bs-toggle="dropdown" aria-expanded="false">
 
-                        <!-- Dynamic Icon based on selection -->
+                        
                         {% if sort_by == 'oldest' %}
                         <i class="fas fa-sort-amount-up-alt text-muted"></i>
                         {% elif sort_by == 'most_viewed' %}
@@ -112,7 +112,7 @@
                         </span>
                     </button>
 
-                    <!-- Dropdown Menu -->
+                   
                     <ul class="dropdown-menu dropdown-menu-end shadow-lg border border-secondary"
                         style="background: var(--surface-card);">
 
@@ -160,7 +160,7 @@
             </form>
         </div>
 
-        <!-- Notes Grid -->
+
         <div class="row g-4" id="notesGrid">
             {% for note in notes %}
             <div class="col-md-6 col-lg-4">
@@ -191,11 +191,9 @@
                         </div>
                     </div>
 
-                    <!-- FIXED CARD FOOTER -->
+                   
                     <div class="card-footer bg-transparent py-3 px-4" style="border-top: 1px solid var(--border-color);">
                         <div class="d-flex align-items-center justify-content-between w-100">
-
-                            <!-- 1. USER INFO (Flexible width, forced to truncate) -->
                             <div class="d-flex align-items-center me-3" style="min-width: 0; flex: 1;">
                                 <a href="{% url 'public_profile' note.user.username %}"
                                     class="text-decoration-none d-flex align-items-center text-muted w-100">
@@ -206,12 +204,12 @@
                                     {% else %}
                                     <i class="fas fa-user-circle fa-lg me-2 flex-shrink-0"></i>
                                     {% endif %}
-                                    <!-- text-truncate only works if parent has min-width: 0 -->
+                                   
                                     <small class="text-truncate fw-bold mb-0 d-block w-100">{{ note.user.username }}</small>
                                 </a>
                             </div>
 
-                            <!-- 2. STATS (Fixed width, never shrinks) -->
+                          
                             <div class="d-flex align-items-center gap-3 flex-shrink-0 small text-muted">
                                 <div class="d-flex align-items-center">
                                     <span class="text-warning fw-bold me-1">{{ note.avg_rating|default:"0.0" }}</span>
@@ -244,67 +242,63 @@
 </div>
 
 <script>
-    // 1. AJAX Sorting Logic
+   
     function submitSort(value) {
-        // Update URL Params
+       
         const urlParams = new URLSearchParams(window.location.search);
         urlParams.set('sort', value);
         
-        // Preserve Search Query if exists
+        
         const currentQ = urlParams.get('q');
         if (currentQ) urlParams.set('q', currentQ);
         
         loadContent(window.location.pathname + '?' + urlParams.toString());
     }
 
-    // 2. Generic Content Loader (HTML Swap)
+  
     async function loadContent(url) {
         const wrapper = document.getElementById('ajax-content-wrapper');
         
-        // Visual Loading State
+       
         wrapper.classList.add('loading-state');
         
         try {
             const res = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
             const html = await res.text();
             
-            // Parse HTML to extract the new wrapper content
+            
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
             const newContent = doc.getElementById('ajax-content-wrapper').innerHTML;
             
-            // Swap Content
+           
             wrapper.innerHTML = newContent;
             
-            // Update URL in Browser History (No Reload)
+           
             window.history.pushState({}, '', url);
-            
-            // Re-bind navbar search if strictly needed (Optional optimization)
 
         } catch (err) {
             console.error("AJAX Error:", err);
-            // Fallback: Full reload if fetch fails
             window.location.href = url;
         } finally {
             wrapper.classList.remove('loading-state');
         }
     }
 
-    // 3. Hijack Navbar Search (To make it AJAX too)
+    
     document.addEventListener("DOMContentLoaded", function() {
-        // Find the search form in the navbar (base.html)
-        // Corrected quotes to avoid syntax errors in editors:
+      
         const navSearchForm = document.querySelector('form[action="{% url "home" %}"]');
         
         if (navSearchForm) {
             navSearchForm.addEventListener('submit', function(e) {
-                // Only intercept if we are currently on the home page
+               
                 if (window.location.pathname === "{% url 'home' %}") {
                     e.preventDefault();
                     const formData = new FormData(this);
                     const q = formData.get('q');
                     
-                    // Keep existing sort if any
+                    
                     const urlParams = new URLSearchParams(window.location.search);
                     urlParams.set('q', q);
                     
@@ -314,7 +308,7 @@
         }
     });
 
-    // 4. Handle Browser Back/Forward Buttons
+    
     window.addEventListener('popstate', function() {
         loadContent(window.location.href);
     });
