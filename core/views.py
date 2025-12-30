@@ -14,22 +14,15 @@ from django.http import JsonResponse, FileResponse, Http404
 from django.conf import settings
 from django.template.loader import render_to_string
 
-# Local imports
 from .forms import UserRegisterForm, ProfileForm, NoteForm, CommentForm
 from .models import Note, Profile, Comment, Rating
 from .utils import send_email, generate_otp, delete_file_if_exists
 from .gemini import generate_study_help
 
-# ==========================
-# SIGNALS & ALERTS
-# ==========================
+
 @receiver(user_logged_in)
 def on_user_logged_in(sender, request, user, **kwargs):
-    """
-    Sends an email alert when a user logs in.
-    """
     try:
-        # Run in a separate thread so login isn't slow
         threading.Thread(target=send_email, args=(
             user.email,
             "Security Alert: New Login",
@@ -40,18 +33,12 @@ def on_user_logged_in(sender, request, user, **kwargs):
     except Exception as e:
         print(f"Email Error: {e}")
 
-# ==========================
-# AUTHENTICATION
-# ==========================
 
 def register(request):
     if request.method == 'POST':
-        # --- CLEANUP LOGIC ---
-        # If a username/email is taken by an UNVERIFIED account, delete it so new user can claim it.
         username = request.POST.get('username')
         email = request.POST.get('email')
         User.objects.filter(username=username, is_active=False).delete()
-        # ---------------------
 
         u_form = UserRegisterForm(request.POST)
         p_form = ProfileForm(request.POST, request.FILES)
@@ -59,7 +46,7 @@ def register(request):
         if u_form.is_valid() and p_form.is_valid():
             try:
                 user = u_form.save(commit=False)
-                user.is_active = False # Inactive until OTP verified
+                user.is_active = False 
                 user.save()
                 
                 profile, created = Profile.objects.get_or_create(user=user)
@@ -76,22 +63,18 @@ def register(request):
                 
                 request.session['verification_id'] = user.id
                 
-                # === AJAX SUCCESS ===
                 if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                     return JsonResponse({'status': 'success', 'redirect_url': '/verify/'})
                 
                 return redirect('verify_email')
             except Exception as e:
                 if user.id: user.delete()
-                # === AJAX EXCEPTION ===
                 if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                     return JsonResponse({'status': 'error', 'errors': {'non_field_errors': ["Registration Error. Please try again."]}})
                 messages.error(request, "Registration Error. Please try again.")
         else:
-            # === AJAX VALIDATION ERRORS ===
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 errors = {}
-                # Merge errors from both forms
                 for field, error_list in u_form.errors.items():
                     errors[field] = error_list
                 for field, error_list in p_form.errors.items():
@@ -102,6 +85,7 @@ def register(request):
         u_form = UserRegisterForm()
         p_form = ProfileForm()
     return render(request, 'register.html', {'u_form': u_form, 'p_form': p_form})
+
 
 def verify_email(request):
     if request.method == 'POST':
@@ -127,13 +111,11 @@ def verify_email(request):
                 
                 del request.session['verification_id']
                 
-                # === AJAX SUCCESS ===
                 if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                     return JsonResponse({'status': 'success', 'redirect_url': '/'})
 
                 return redirect('home')
             else:
-                # === AJAX ERROR ===
                 if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                     return JsonResponse({'status': 'error', 'message': 'Invalid Verification Code.'})
                 messages.error(request, "Invalid Code.")
@@ -149,9 +131,6 @@ def verify_email(request):
     }
     return render(request, 'verify_generic.html', context)
 
-# ==========================
-# PROFILE SETTINGS & SECURITY
-# ==========================
 
 @login_required
 def edit_profile(request):
@@ -159,7 +138,6 @@ def edit_profile(request):
     request.user.refresh_from_db()
 
     if request.method == 'POST':
-        # Security: Password check required for any profile change
         password = request.POST.get('password')
         if not password or not request.user.check_password(password):
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
@@ -168,13 +146,11 @@ def edit_profile(request):
             return redirect('edit_profile')
 
         try:
-            # Update Basic Info
             request.user.first_name = request.POST.get('first_name')
             request.user.last_name = request.POST.get('last_name')
             request.user.profile.bio = request.POST.get('bio')
-
             request.user.profile.ai_instructions = request.POST.get('ai_instructions')
-            # Update Picture
+
             if request.POST.get('remove_picture') == 'on':
                 request.user.profile.profile_pic = None
             elif 'profile_pic' in request.FILES:
@@ -183,7 +159,6 @@ def edit_profile(request):
             request.user.save()
             request.user.profile.save()
 
-            # Email Change Logic (Step 1)
             new_email = request.POST.get('email')
             if new_email and new_email != request.user.email:
                 request.session['pending_email'] = new_email
@@ -200,7 +175,6 @@ def edit_profile(request):
                     return JsonResponse({'status': 'success', 'redirect_url': '/verify-change/step-1/'})
                 return redirect('verify_email_change_old')
             
-            # === AJAX SUCCESS (Standard Update) ===
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'success', 'message': 'Profile updated successfully!', 'redirect_url': '/profile/'})
 
@@ -214,6 +188,7 @@ def edit_profile(request):
 
     return render(request, 'edit_profile.html')
 
+
 @login_required
 def verify_email_change_old(request):
     pending_email = request.session.get('pending_email')
@@ -222,7 +197,6 @@ def verify_email_change_old(request):
     if request.method == 'POST':
         code = request.POST.get('code')
         if request.user.profile.verification_code == code:
-            # Step 1 Success -> Setup Step 2
             new_otp = generate_otp()
             request.user.profile.verification_code = new_otp
             request.user.profile.save()
@@ -249,6 +223,7 @@ def verify_email_change_old(request):
     }
     return render(request, 'verify_generic.html', context)
 
+
 @login_required
 def verify_email_change_new(request):
     pending_email = request.session.get('pending_email')
@@ -260,17 +235,14 @@ def verify_email_change_new(request):
         if request.user.profile.verification_code == code:
             old_email = request.user.email
             
-            # Commit Email Change
             request.user.email = pending_email
             request.user.profile.verification_code = None
             request.user.save()
             request.user.profile.save()
             
-            # Cleanup
             del request.session['pending_email']
             del request.session['step1_verified']
             
-            # Alerts
             send_email(old_email, "Email Changed", "Security Alert", f"Email changed to {pending_email}.", request.user.username)
             send_email(pending_email, "Verified", "Success!", "Email updated successfully.", request.user.username)
             
@@ -293,6 +265,7 @@ def verify_email_change_new(request):
     }
     return render(request, 'verify_generic.html', context)
 
+
 @login_required
 def init_delete_account(request):
     if request.method == 'POST':
@@ -302,12 +275,12 @@ def init_delete_account(request):
         send_email(request.user.email, "Confirm Deletion", "Account Deletion", 
                    "Enter code to permanently delete your account.", request.user.username, otp)
         
-        # AJAX Check
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             return JsonResponse({'status': 'success', 'redirect_url': '/profile/delete/verify/'})
 
         return redirect('verify_delete_account')
     return redirect('edit_profile')
+
 
 @login_required
 def verify_delete_account(request):
@@ -315,7 +288,7 @@ def verify_delete_account(request):
         if request.user.profile.verification_code == request.POST.get('code'):
             user = request.user
             logout(request)
-            user.delete() # Signals in models.py handle file cleanup
+            user.delete() 
             
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'success', 'redirect_url': '/login/'})
@@ -336,9 +309,6 @@ def verify_delete_account(request):
     }
     return render(request, 'verify_generic.html', context)
 
-# ==========================
-# PASSWORD RECOVERY
-# ==========================
 
 def forgot_password(request):
     if request.method == 'POST':
@@ -366,6 +336,7 @@ def forgot_password(request):
                 return JsonResponse({'status': 'error', 'message': "Username not found."})
              messages.error(request, "Username not found.")
     return render(request, 'forgot_password.html')
+
 
 def verify_forgot_code(request):
     user_id = request.session.get('reset_user_id')
@@ -399,6 +370,7 @@ def verify_forgot_code(request):
     }
     return render(request, 'verify_generic.html', context)
 
+
 def reset_new_password(request):
     if not request.session.get('code_verified'): return redirect('forgot_password')
     
@@ -410,7 +382,6 @@ def reset_new_password(request):
             user.set_password(p1)
             user.save()
             
-            # Cleanup
             request.session.pop('reset_user_id', None)
             request.session.pop('code_verified', None)
             
@@ -427,6 +398,7 @@ def reset_new_password(request):
              messages.error(request, "Passwords do not match.")
     return render(request, 'reset_new_password.html')
 
+
 def forgot_username(request):
     if request.method == 'POST':
         email = request.POST.get('email')
@@ -442,23 +414,18 @@ def forgot_username(request):
         return redirect('login')
     return render(request, 'forgot_username.html')
 
-# ==========================
-# MAIN APP VIEWS (OPTIMIZED)
-# ==========================
 
 @login_required
 def home(request):
     query = request.GET.get('q')
     sort_by = request.GET.get('sort', 'recent')
     
-    # OPTIMIZATION: Select User+Profile instantly to avoid N+1 queries
     notes = Note.objects.select_related('user', 'user__profile').annotate(
         avg_rating=Avg('ratings__score'), 
         comment_count=Count('comments')
     )
 
     if query:
-        # === WEIGHTED SEARCH ALGORITHM ===
         notes = notes.annotate(
             relevance=(
                 Case(When(title__icontains=query, then=Value(10)), default=Value(0), output_field=IntegerField()) +
@@ -469,39 +436,36 @@ def home(request):
             )
         ).filter(relevance__gt=0).order_by('-relevance', '-avg_rating', '-created_at')
 
-    # Sorting overrides
     if sort_by == 'oldest': notes = notes.order_by('created_at')
     elif sort_by == 'most_viewed': notes = notes.order_by('-view_count')
     elif sort_by == 'top_rated': notes = notes.order_by('-avg_rating')
     elif not query: notes = notes.order_by('-created_at')
 
-    # AJAX Capability check (Optional: if frontend handles partial reloads later)
-    # Keeping standard return for now as 'search' is not defined as an action-view in logic
     return render(request, 'home.html', {'notes': notes, 'query': query, 'sort_by': sort_by})
+
 
 @login_required
 def profile(request):
-    # OPTIMIZED PROFILE VIEW
     notes = Note.objects.filter(user=request.user).select_related('user', 'user__profile').annotate(
         avg_rating=Avg('ratings__score'),
         comment_count=Count('comments')
     ).order_by('-created_at')
     return render(request, 'profile.html', {'notes': notes})
 
+
 def public_profile(request, username):
     profile_user = get_object_or_404(User, username=username)
-    # OPTIMIZED PUBLIC PROFILE
     user_notes = Note.objects.filter(user=profile_user).select_related('user', 'user__profile').annotate(
         avg_rating=Avg('ratings__score'),
         comment_count=Count('comments')
     ).order_by('-created_at')
     return render(request, 'public_profile.html', {'profile_user': profile_user, 'user_notes': user_notes})
 
+
 @login_required
 def note_detail(request, pk):
     note = get_object_or_404(Note, pk=pk)
     
-    # View Counting Logic
     session_key = f'viewed_note_{pk}'
     if not request.session.get(session_key, False):
         note.view_count += 1
@@ -520,8 +484,6 @@ def note_detail(request, pk):
         if c_form.is_valid():
             new_comment = Comment.objects.create(post=note, user=request.user, text=c_form.cleaned_data['text'])
             
-            # --- AJAX HANDLER (Start) ---
-            # If the request comes from JavaScript, return JSON instead of reloading
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({
                     'status': 'success',
@@ -529,13 +491,11 @@ def note_detail(request, pk):
                     'text': new_comment.text,
                     'time': 'Just now',
                     'profile_url': f"/user/{new_comment.user.username}/",
-                    # Handle Avatar vs Default Initial
                     'avatar_url': new_comment.user.profile.profile_pic.url if new_comment.user.profile.profile_pic else None,
                     'user_initial': new_comment.user.username[0].upper(),
                     'is_author': new_comment.user == note.user,
                     'comment_id': new_comment.pk
                 })
-            # --- AJAX HANDLER (End) ---
 
             return redirect('note_detail', pk=pk)
     else:
@@ -543,6 +503,7 @@ def note_detail(request, pk):
 
     comments = note.comments.all().order_by('-created_at')
     return render(request, 'note_detail.html', {'note': note, 'comments': comments, 'c_form': c_form, 'avg_rating': avg_rating, 'user_rating': user_rating})
+
 
 @login_required
 def upload_note(request):
@@ -553,17 +514,15 @@ def upload_note(request):
             note.user = request.user
             note.save()
             
-            # === AJAX SUCCESS ===
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({
                     'status': 'success', 
                     'message': 'Note uploaded successfully!', 
-                    'redirect_url': '/' # Redirect to home or detail
+                    'redirect_url': '/' 
                 })
 
             return redirect('home')
         else:
-            # === AJAX ERROR ===
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'error', 'errors': form.errors})
 
@@ -571,10 +530,10 @@ def upload_note(request):
         form = NoteForm()
     return render(request, 'upload_note.html', {'form': form})
 
+
 @login_required
 def edit_note(request, pk):
     note = get_object_or_404(Note, pk=pk)
-    # Security check: User must be the owner
     if request.user != note.user: 
         return redirect('home')
     
@@ -583,19 +542,16 @@ def edit_note(request, pk):
         if form.is_valid():
             form.save()
             
-            # === AJAX Response ===
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({
                     'status': 'success', 
                     'message': 'Changes saved! Redirecting...',
                     'next_url': f"/note/{pk}/"
                 })
-            # =====================
 
             messages.success(request, "Note updated successfully.")
             return redirect('note_detail', pk=pk)
         else:
-             # === AJAX Form Errors ===
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'error', 'errors': form.errors})
     else:
@@ -603,13 +559,13 @@ def edit_note(request, pk):
     
     return render(request, 'upload_note.html', {'form': form, 'title': 'Edit Note'})
 
+
 @login_required
 def delete_note(request, pk):
     note = get_object_or_404(Note, pk=pk)
     if request.user == note.user:
-        note.delete() # Signals handle file deletion
+        note.delete() 
         
-        # === AJAX SUCCESS ===
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             return JsonResponse({'status': 'success', 'redirect_url': '/profile/'})
             
@@ -620,13 +576,13 @@ def delete_note(request, pk):
         messages.error(request, "Unauthorized")
     return redirect('profile')
 
+
 @login_required
 def rate_note(request, pk):
     if request.method == 'POST':
         note = get_object_or_404(Note, pk=pk)
         score = request.POST.get('score')
         
-        # 1. Update/Delete Logic
         if score == '0':
             Rating.objects.filter(user=request.user, note=note).delete()
             user_score = 0
@@ -634,9 +590,7 @@ def rate_note(request, pk):
             Rating.objects.update_or_create(user=request.user, note=note, defaults={'score': int(score)})
             user_score = int(score)
             
-        # 2. AJAX Response (No Reload)
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            # Calculate new average
             new_avg = note.ratings.aggregate(Avg('score'))['score__avg'] or 0
             new_avg = round(new_avg, 1)
             
@@ -649,77 +603,59 @@ def rate_note(request, pk):
 
     return redirect('note_detail', pk=pk)
 
+
 @login_required
 def delete_comment(request, pk):
     comment = get_object_or_404(Comment, pk=pk)
     
-    # Security check
     if request.user == comment.user or request.user == comment.post.user:
         if request.method == 'POST':
             comment.delete()
             
-            # AJAX Response
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'status': 'success', 'pk': pk})
             
-            # Standard Fallback
             return redirect('note_detail', pk=comment.post.pk)
             
     return redirect('home')
 
-# ==========================
-# AI CHAT FEATURES (NEW)
-# ==========================
 
 @login_required
 def ai_chat_page(request, pk):
-    """ 
-    Renders the Split-Screen Study Mode with Pre-calculated AI Diagnostics.
-    """
     note = get_object_or_404(Note, pk=pk)
     
-    # === AI CONTEXT DIAGNOSTIC SYSTEM ===
-    # Determines if the file is suitable for direct AI processing or fallback mode.
-    
-    ai_status = 'ready' # Default: Full capability
+    ai_status = 'ready'
     status_msg = "Full File Context Active"
     
-    # Configuration
-    MAX_SIZE_BYTES = 200 * 1024 * 1024 # 200MB Limit
+    MAX_SIZE_BYTES = 200 * 1024 * 1024 
 
     if not note.file:
         ai_status = 'no_file'
         status_msg = "Metadata Only (No File)"
     else:
         try:
-            # 1. PHYSICAL CHECK
             if not os.path.exists(note.file.path):
                 ai_status = 'error'
                 status_msg = "Server Error: File Missing"
             
-            # 2. SIZE CHECK
             elif note.file.size > MAX_SIZE_BYTES:
                 ai_status = 'too_large'
                 mb_size = note.file.size / (1024*1024)
                 status_msg = f"File Too Large ({mb_size:.0f}MB) • Metadata Mode"
             
             else:
-                # 3. TYPE CHECK
                 raw_path = note.file.path
                 ext = raw_path.split('.')[-1].lower()
                 
-                # List of types Gemini 1.5/2.0 accepts via Files API
                 supported_exts = [
                     'pdf', 'txt', 'md', 'csv', 'html', 'htm', 'xml', 'json', 'yaml', 'yml', 
                     'py', 'js', 'java', 'c', 'cpp', 'h', 'css', 'sql', 'sh', 'bat', 'php'
                 ]
                 
-                # Check media types
                 guessed_type, _ = mimetypes.guess_type(raw_path)
                 is_media = guessed_type and guessed_type.startswith(('image/', 'video/', 'audio/'))
 
                 if ext not in supported_exts and not is_media:
-                    # e.g. .xlsx, .docx, .zip
                     ai_status = 'unsupported'
                     status_msg = f"Unsupported Format ({ext.upper()}) • Metadata Mode"
                     
@@ -729,31 +665,27 @@ def ai_chat_page(request, pk):
 
     context = {
         'note': note,
-        'ai_status': ai_status,   # Used for badge color logic
-        'status_msg': status_msg  # Used for text display
+        'ai_status': ai_status,  
+        'status_msg': status_msg  
     }
     return render(request, 'ai_chat.html', context)
+
 
 @login_required
 def ai_chat_api(request):
     if request.method == 'POST':
         try:
-            # 1. Parse Data
             data = json.loads(request.body)
             user_message = data.get('message', '')
             note_id = data.get('note_id')
-            use_file = data.get('use_file', False)  # The green button toggle
+            use_file = data.get('use_file', False)  
 
             if not user_message:
                 return JsonResponse({'error': "Message empty."}, status=400)
 
-            # 2. Get Note Object
             note = get_object_or_404(Note, pk=note_id)
-            
-            # 3. Build Text Context (Metadata + Comments)
             uploaded_dt = note.created_at.strftime("%B %d, %Y")
             
-            # Get last 10 comments for context
             latest_comments = note.comments.select_related('user').order_by('-created_at')[:10]
             comment_str = ""
             if latest_comments:
@@ -773,51 +705,40 @@ def ai_chat_api(request):
                 f"=== COMMUNITY COMMENTS ===\n{comment_str}"
             )
 
-            # 4. ROBUST FILE HANDLING
             file_path = None
             mime_type = None
-            
-            # Safe Limit: 200MB (prevent server timeouts)
             MAX_SIZE_BYTES = 200 * 1024 * 1024 
 
-            # Only process file if User toggled it ON AND file exists
             if use_file and note.file:
                 try:
                     real_path = note.file.path
                     
-                    # A. Physical Check
                     if not os.path.exists(real_path):
                         context_text += "\n\n[SYSTEM WARNING: File not found on server disk. Answer based on metadata.]"
                     
-                    # B. Size Check
                     elif note.file.size > MAX_SIZE_BYTES:
                         size_mb = note.file.size / (1024 * 1024)
                         context_text += f"\n\n[SYSTEM NOTE: File skipped because it is too large ({size_mb:.1f} MB). Limit is 200 MB.]"
                     
-                    # C. MIME Type & Logic
                     else:
                         mimetypes.init()
                         ext = real_path.split('.')[-1].lower()
                         
-                        # -- TYPE 1: Native PDF --
                         if ext == 'pdf':
                             mime_type = 'application/pdf'
                             file_path = real_path
 
-                        # -- TYPE 2: Code/Text (Force Text) --
                         elif ext in ['txt', 'md', 'csv', 'html', 'xml', 'json', 'yaml', 'env', 
                                      'py', 'js', 'java', 'c', 'cpp', 'css', 'sql', 'php', 'rb', 'go', 'ts']:
                             mime_type = 'text/plain'
                             file_path = real_path
 
-                        # -- TYPE 3: Media (Image/Audio/Video) --
                         else:
                             guessed_type, _ = mimetypes.guess_type(real_path)
                             if guessed_type and guessed_type.startswith(('image/', 'video/', 'audio/')):
                                 mime_type = guessed_type
                                 file_path = real_path
                             else:
-                                # Unsupported (e.g., .xlsx, .docx, .zip) -> Fallback to Context
                                 context_text += f"\n\n[SYSTEM NOTE: The file type ({ext}) cannot be read directly by AI. Answer based on Metadata & Comments.]"
 
                 except Exception as e:
@@ -825,8 +746,6 @@ def ai_chat_api(request):
                     context_text += f"\n[System Error reading file: {str(e)}]"
                     file_path = None
 
-            # 5. Call Gemini Wrapper
-            # (Assuming you don't have user_instructions yet, passing empty string)
             ai_response = generate_study_help(
                 user_prompt=user_message,
                 context=context_text,
@@ -843,34 +762,20 @@ def ai_chat_api(request):
 
     return JsonResponse({'error': 'POST only'}, status=405)
 
-# ==========================
-# MEDIA SERVING (FORCE INLINE)
-# ==========================
 
 def serve_media_inline(request, path):
-    """
-    Custom view to serve media files with 'Content-Disposition: inline'.
-    This forces the browser to open PDFs/Images/Videos instead of downloading them.
-    """
-    # Construct full path
     file_path = os.path.join(settings.MEDIA_ROOT, path)
 
-    # Security check: Prevent directory traversal (e.g. ../../settings.py)
     if not os.path.normpath(file_path).startswith(os.path.normpath(settings.MEDIA_ROOT)):
         raise Http404("Access Denied")
 
     if not os.path.exists(file_path):
         raise Http404("File not found")
 
-    # Guess the MIME type (e.g. 'application/pdf', 'video/mp4')
     content_type, encoding = mimetypes.guess_type(file_path)
     content_type = content_type or 'application/octet-stream'
 
-    # Open the file
     response = FileResponse(open(file_path, 'rb'), content_type=content_type)
-
-    # MAGIC HEADER: 'inline' tells browser to render it. 
-    # 'attachment' would force download.
     response['Content-Disposition'] = f'inline; filename="{os.path.basename(file_path)}"'
 
     return response
