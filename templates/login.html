@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    /* Fix Chrome Autofill to match Dark Theme Variables */
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus,
+    input:-webkit-autofill:active {
+        -webkit-box-shadow: 0 0 0 30px var(--surface-input) inset !important;
+        -webkit-text-fill-color: var(--text-main) !important;
+        caret-color: var(--text-main);
+        transition: background-color 5000s ease-in-out 0s;
+    }
+</style>
+
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="card-modern" style="max-width: 450px; width: 100%;">
+
+        <!-- Header -->
+        <div class="card-header-modern">
+            <div class="mb-2">
+                <i class="fas fa-fingerprint fa-3x text-white opacity-75"></i>
+            </div>
+            <h3 class="fw-bold mb-0 text-white">Welcome Back</h3>
+            <p class="small text-white-50 mb-0">Login to continue to NoteShare</p>
+        </div>
+
+        <div class="card-body p-4 p-md-5">
+            <form method="post" autocomplete="off" id="loginForm">
+                {% csrf_token %}
+
+                <!-- Non-field Errors -->
+                {% if form.non_field_errors %}
+                <div class="alert alert-danger py-2 small shadow-sm mb-4 border-0">
+                    {% for error in form.non_field_errors %}
+                    <i class="fas fa-exclamation-circle me-1"></i> {{ error }}
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <!-- Username -->
+                <div class="mb-4">
+                    <label for="id_username" class="small text-white opacity-75 text-uppercase fw-bold mb-1">
+                        Username
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text" style="border-color: var(--border-color);">
+                            <i class="fas fa-user text-primary"></i>
+                        </span>
+                        <input type="text"
+                               id="id_username"
+                               name="username"
+                               class="form-control"
+                               placeholder="Enter username"
+                               required>
+                    </div>
+
+                    <div class="text-end mt-2">
+                        <a href="{% url 'forgot_username' %}"
+                           class="small text-decoration-none text-white-50 hover-warning">
+                            Forgot Username?
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Password -->
+                <div class="mb-4">
+                    <label for="id_password" class="small text-white opacity-75 text-uppercase fw-bold mb-1">
+                        Password
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text" style="border-color: var(--border-color);">
+                            <i class="fas fa-lock text-primary"></i>
+                        </span>
+                        <input type="password"
+                               id="id_password"
+                               name="password"
+                               class="form-control"
+                               placeholder="••••••••"
+                               required>
+                    </div>
+
+                    <div class="text-end mt-2">
+                        <a href="{% url 'forgot_password' %}"
+                           class="small text-decoration-none text-white-50 hover-warning">
+                            Forgot Password?
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Login Button -->
+                <div class="d-grid mt-4">
+                    <button type="submit" id="loginBtn" class="btn-brand shadow-lg fw-bold">
+                        LOGIN
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Footer -->
+        <div class="card-footer bg-transparent text-center py-4"
+             style="border-top: 1px solid var(--border-color);">
+            <p class="small text-white-50 mb-0">
+                Don't have an account?
+                <a href="{% url 'register' %}"
+                   class="fw-bold text-decoration-none"
+                   style="color: var(--brand-primary);">
+                    Create Account
+                </a>
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- UX Enhancement Script -->
+<script>
+    document.getElementById('loginForm').addEventListener('submit', function() {
+        const btn = document.getElementById('loginBtn');
+        // Visual feedback immediately
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-circle-notch fa-spin me-2"></i> Authenticating...';
+    });
+</script>
+{% endblock %}

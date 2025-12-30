@@ -1,0 +1,367 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container d-flex justify-content-center align-items-center my-4">
+    <!-- Main Card -->
+    <div class="card-modern" style="max-width: 600px; width: 100%;">
+
+        <!-- HEADER: Custom Blue/Teal Gradient -->
+        <div class="card-header-modern"
+            style="background: linear-gradient(135deg, var(--brand-accent), #117a8b);">
+
+            <div class="position-relative d-inline-block mb-2">
+                {% if user.profile.profile_pic %}
+                <!-- Added ID 'header-profile-img' for AJAX updates -->
+                <img src="{{ user.profile.profile_pic.url }}"
+                     id="header-profile-img"
+                     class="rounded-circle border border-3 border-white shadow-sm"
+                     width="80" height="80"
+                     style="object-fit: cover;"
+                     alt="Profile Picture"
+                     onerror="this.style.display='none'; document.getElementById('default-icon').style.display='inline-block';">
+                
+                <!-- Fallback Icon -->
+                <i id="default-icon" class="fas fa-user-circle fa-4x text-white-50" style="display: none;"></i>
+                {% else %}
+                <i class="fas fa-user-circle fa-4x text-white-50"></i>
+                {% endif %}
+            </div>
+
+            <h3 class="fw-bold mb-0 mt-2 text-white">Edit Profile</h3>
+            <p class="small text-white-50 mb-0">Update your personal details.</p>
+        </div>
+
+        <div class="card-body p-4 p-md-5">
+            <form method="post" enctype="multipart/form-data" id="profileForm">
+                {% csrf_token %}
+
+                <!-- SECTION 1: Identity -->
+                <div class="d-flex align-items-center mb-4 pb-2"
+                     style="border-bottom: 1px solid var(--border-color);">
+                    <i class="fas fa-user-tag me-2" style="color: var(--brand-accent);"></i>
+                    <h6 class="text-uppercase text-white fw-bold mb-0" style="font-size: 0.8rem;">Identity</h6>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6 mb-3 mb-md-0">
+                        <label for="first_name" class="small text-white text-uppercase fw-bold mb-1">
+                            First Name
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                            <input type="text" id="first_name" name="first_name"
+                                   value="{{ user.first_name }}" class="form-control" placeholder="First Name">
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="last_name" class="small text-white text-uppercase fw-bold mb-1">
+                            Last Name
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                            <input type="text" id="last_name" name="last_name"
+                                   value="{{ user.last_name }}" class="form-control" placeholder="Last Name">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Email -->
+                <div class="mb-4">
+                    <label for="email" class="small text-white text-uppercase fw-bold mb-1">
+                        Email Address
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                        <input type="email" id="email" name="email"
+                               value="{{ user.email }}" class="form-control" required placeholder="name@example.com">
+                    </div>
+                </div>
+
+                <!-- SECTION 2: Public Profile -->
+                <div class="d-flex align-items-center mb-4 mt-5 pb-2"
+                     style="border-bottom: 1px solid var(--border-color);">
+                    <i class="fas fa-id-card me-2" style="color: var(--brand-accent);"></i>
+                    <h6 class="text-uppercase text-white fw-bold mb-0" style="font-size: 0.8rem;">
+                        Public Profile
+                    </h6>
+                </div>
+
+                <div class="mb-3">
+                    <label for="bio" class="small text-white text-uppercase fw-bold mb-1">
+                        Bio
+                    </label>
+                    <textarea id="bio" name="bio" class="form-control" rows="3" placeholder="Tell us about yourself...">{{ user.profile.bio }}</textarea>
+                </div>
+
+                <div class="mb-4">
+                    <label for="profile_pic" class="small text-white text-uppercase fw-bold mb-1">
+                        Change Picture
+                    </label>
+                    <!-- ID ADDED HERE for JS Access -->
+                    <input type="file" id="profile_pic_input" name="profile_pic" class="form-control mb-2" accept="image/*">
+                    <div class="form-text text-white-50 small">Max size: 5MB. Formats: JPG, PNG.</div>
+
+                    {% if user.profile.profile_pic %}
+                    <div class="form-check p-2 rounded border mt-2"
+                         style="border-color: var(--border-color) !important; background: var(--surface-input);">
+                        <input class="form-check-input ms-0 me-2"
+                               type="checkbox" name="remove_picture" id="removePic">
+                        <label class="form-check-label text-danger small fw-bold" for="removePic">
+                            Delete current photo (Reset to default)
+                        </label>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- SECTION 3: AI Settings -->
+                <div class="d-flex align-items-center mb-4 mt-5 pb-2"
+                     style="border-bottom: 1px solid var(--border-color);">
+                    <i class="fas fa-robot me-2" style="color: var(--brand-accent);"></i>
+                    <h6 class="text-uppercase text-white fw-bold mb-0" style="font-size: 0.8rem;">
+                        AI Personalization
+                    </h6>
+                </div>
+
+                <div class="mb-3">
+                    <label for="ai_instructions" class="small text-white text-uppercase fw-bold mb-1">
+                        Custom AI Instructions
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text" style="border-color: var(--border-color);">
+                            <i class="fas fa-magic text-warning"></i>
+                        </span>
+                        <textarea id="ai_instructions" name="ai_instructions" class="form-control" rows="3" 
+                                  placeholder="Enter your preferences here...">{{ user.profile.ai_instructions|default:'' }}</textarea>
+                    </div>
+                </div>
+                
+                <!-- SECTION 4: Security -->
+                <div class="d-flex align-items-center mb-4 mt-5 pb-2"
+                     style="border-bottom: 1px solid var(--border-color);">
+                    <i class="fas fa-shield-alt me-2" style="color: var(--brand-accent);"></i>
+                    <h6 class="text-uppercase text-white fw-bold mb-0" style="font-size: 0.8rem;">
+                        Security
+                    </h6>
+                </div>
+
+                <div class="mb-4">
+                    <a href="{% url 'password_change' %}"
+                       class="btn btn-outline-danger w-100 rounded-pill fw-bold">
+                        <i class="fas fa-key me-2"></i> Change Password
+                    </a>
+                </div>
+
+                <!-- Confirmation Box -->
+                <div class="alert shadow-sm rounded-3 border-0"
+                     style="background: rgba(220, 53, 69, 0.15);">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="fas fa-lock text-danger me-2"></i>
+                        <span class="fw-bold text-danger small text-uppercase">
+                            Confirm Changes
+                        </span>
+                    </div>
+                    <p class="small text-white mb-2 opacity-75">
+                        Please enter your current password to save these changes:
+                    </p>
+                    <input type="password" name="password"
+                           class="form-control border-danger text-white"
+                           required placeholder="••••••••" style="background: rgba(0,0,0,0.2);">
+                </div>
+
+                <!-- ACTION BUTTONS -->
+                <div class="d-grid gap-2 d-md-flex justify-content-md-between mt-4">
+                    <a href="{% url 'profile' %}"
+                       class="btn btn-outline-light rounded-pill px-4 fw-bold d-flex align-items-center justify-content-center">
+                        Cancel
+                    </a>
+
+                    <button type="submit" id="saveProfileBtn"
+                            class="btn-brand shadow-sm px-5"
+                            style="background: linear-gradient(135deg, var(--brand-accent), #117a8b);">
+                        Save Changes
+                    </button>
+                </div>
+            </form>
+
+            <!-- Danger Zone -->
+            <div class="mt-5 pt-3" style="border-top: 1px dashed var(--color-danger);">
+                <h6 class="text-uppercase text-danger fw-bold mb-3 small">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Danger Zone
+                </h6>
+                <button type="button"
+                        class="btn btn-danger w-100 fw-bold opacity-75"
+                        data-bs-toggle="modal"
+                        data-bs-target="#deleteAccountModal">
+                    Delete My Account
+                </button>
+            </div>
+        </div>
+
+        <div class="card-footer bg-transparent text-center py-3 border-top border-secondary text-white-50 small">
+            Member since {{ user.date_joined|date:"M d, Y" }}
+        </div>
+    </div>
+</div>
+
+<!-- Delete Account Modal -->
+<div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <!-- Styled to match the Card Modern Theme -->
+        <div class="modal-content text-white shadow-lg" 
+             style="background: var(--surface-card); border: 1px solid var(--border-color);">
+            
+            <div class="modal-header border-0 text-white" style="background: var(--color-danger);">
+                <h5 class="modal-title fw-bold">Confirm Deletion</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body text-center py-4">
+                <i class="fas fa-exclamation-circle fa-3x text-danger mb-3"></i>
+                <p class="mb-1">We will send an <strong>OTP to your email</strong> to confirm deletion.</p>
+                <p class="text-danger fw-bold small text-uppercase">This action cannot be undone.</p>
+            </div>
+
+            <div class="modal-footer border-top border-secondary justify-content-center">
+                <button type="button"
+                        class="btn btn-outline-light rounded-pill px-4"
+                        data-bs-dismiss="modal">
+                    Cancel
+                </button>
+
+                <form action="{% url 'init_delete_account' %}" method="POST" id="deleteAccountForm">
+                    {% csrf_token %}
+                    <button type="submit" id="deleteAccountBtn"
+                            class="btn btn-danger rounded-pill px-4 fw-bold">
+                        Send OTP & Delete
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JAVASCRIPT: AJAX & VALIDATION -->
+<script>
+    // 1. Profile Save Logic with File Validation
+    document.getElementById('profileForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const btn = document.getElementById('saveProfileBtn');
+        const originalText = btn.innerText;
+        
+        // --- NEW: Client-Side File Validation ---
+        const fileInput = document.getElementById('profile_pic_input');
+
+        // Inside document.getElementById('profileForm').addEventListener...
+
+    // [PATCH START] Text Length Validation
+    const first_name = document.getElementById('first_name').value;
+    const last_name = document.getElementById('last_name').value;
+    const bio = document.getElementById('bio').value;
+    const ai_inst = document.getElementById('ai_instructions').value;
+
+    if (first_name.length > 20) { showToast("First name max 20 chars.", "error"); return; }
+    if (last_name.length > 20) { showToast("Last name max 20 chars.", "error"); return; }
+    if (bio.length > 300) { showToast("Bio max 300 chars.", "error"); return; }
+    if (ai_inst.length > 500) { showToast("AI Instructions max 500 chars.", "error"); return; }
+    // [PATCH END]
+
+    // ... (File validation logic continues here) ...
+        if (fileInput.files.length > 0) {
+            const file = fileInput.files[0];
+            const maxSize = 5 * 1024 * 1024; // 5MB Limit for Profile Pics
+            
+            // Size Check
+            if (file.size > maxSize) {
+                showToast("Image too large! Max size is 5MB.", "error");
+                return; 
+            }
+            
+            // Type Check (Basic)
+            if (!file.type.startsWith('image/')) {
+                showToast("Invalid file type. Please upload an image.", "error");
+                return;
+            }
+        }
+        // ----------------------------------------
+
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Saving...';
+
+        try {
+            const res = await fetch("{% url 'edit_profile' %}", {
+                method: 'POST',
+                body: new FormData(this),
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            });
+            const data = await res.json();
+
+            if (data.status === 'success') {
+                showToast(data.message || 'Profile updated!', 'success');
+                
+                // Manual Update of Header Image (If view returns data)
+                const headerImg = document.getElementById('header-profile-img');
+                if (headerImg && data.new_avatar_url) {
+                    headerImg.src = data.new_avatar_url;
+                }
+
+                // Redirect logic (e.g. for email changes) or Fallback Reload
+                // If the view didn't return specific new data to update DOM, we should reload 
+                // to ensure the Navbar and other parts of the site reflect changes.
+                if (data.redirect_url) {
+                    setTimeout(() => window.location.href = data.redirect_url, 1000);
+                } else if (!data.new_avatar_url) {
+                    // Fallback: Reload if no data came back to update UI manually
+                    setTimeout(() => window.location.reload(), 1000);
+                } else {
+                    // Stay on page and re-enable button (True AJAX feel)
+                    btn.disabled = false;
+                    btn.innerText = originalText;
+                }
+            } else {
+                showToast(data.message || 'Error updating profile.', 'error');
+                btn.disabled = false;
+                btn.innerText = originalText;
+            }
+        } catch (err) {
+            console.error(err);
+            showToast('Connection error.', 'error');
+            btn.disabled = false;
+            btn.innerText = originalText;
+        }
+    });
+
+    // 2. Delete Account Logic (AJAX)
+    document.getElementById('deleteAccountForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const btn = document.getElementById('deleteAccountBtn');
+        btn.disabled = true;
+        btn.innerHTML = 'Sending...';
+
+        try {
+            const res = await fetch("{% url 'init_delete_account' %}", {
+                method: 'POST',
+                headers: { 
+                    'X-CSRFToken': '{{ csrf_token }}', 
+                    'X-Requested-With': 'XMLHttpRequest' 
+                }
+            });
+            const data = await res.json();
+            
+            if (data.status === 'success') {
+                window.location.href = data.redirect_url;
+            } else {
+                showToast(data.message || "Error initializing deletion.", 'error');
+                btn.disabled = false;
+                btn.innerHTML = 'Send OTP & Delete';
+            }
+        } catch (err) {
+            console.error(err);
+            showToast('Connection error.', 'error');
+            btn.disabled = false;
+            btn.innerHTML = 'Send OTP & Delete';
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <!-- card-modern for unified styling -->
+    <div class="card-modern" style="max-width: 450px; width: 100%;">
+        
+        <!-- Header: Using Brand Accent (Cyan) -->
+        <div class="card-header-modern" style="background: linear-gradient(135deg, var(--brand-accent), #0dcaf0);">
+            <div class="mb-2">
+                <i class="fas fa-id-card fa-3x text-white opacity-75"></i>
+            </div>
+            <h3 class="fw-bold mb-0 text-white">Forgot Username</h3>
+            <p class="small text-white-50 mb-0">Recover your login identity.</p>
+        </div>
+
+        <div class="card-body p-4 p-md-5">
+            
+            <div class="text-center mb-4">
+                <p class="text-white opacity-75 small">
+                    Enter your <b>Registered Email</b>. We will send any usernames associated with it to your inbox.
+                </p>
+            </div>
+
+            <form method="POST" id="forgotUsernameForm">
+                {% csrf_token %}
+                
+                <div class="mb-4">
+                    <label class="small text-white text-uppercase fw-bold mb-1">Email Address</label>
+                    <div class="input-group">
+                        <span class="input-group-text" style="border-color: var(--border-color);">
+                            <!-- Using accent color for icon to match header -->
+                            <i class="fas fa-envelope" style="color: var(--brand-accent);"></i>
+                        </span>
+                        <input type="email" name="email" class="form-control" placeholder="e.g. name@example.com" required>
+                    </div>
+                </div>
+
+                <div class="d-grid mt-4">
+                    <!-- Custom style to match the header color -->
+                    <button type="submit" id="submitBtn" class="btn-brand shadow-lg fw-bold" style="background: linear-gradient(135deg, var(--brand-accent), #0dcaf0);">
+                        Find Usernames
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Footer -->
+        <div class="card-footer bg-transparent text-center py-4" style="border-top: 1px solid var(--border-color);">
+            <a href="{% url 'login' %}" class="small text-decoration-none fw-bold hover-warning" style="color: rgba(255, 255, 255, 0.75);">
+                <i class="fas fa-arrow-left me-1"></i> Back to Login
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('forgotUsernameForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const btn = document.getElementById('submitBtn');
+        const originalText = btn.innerText;
+
+        // 1. Loading State
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Processing...';
+
+        try {
+            // 2. AJAX Request
+            const res = await fetch("{% url 'forgot_username' %}", {
+                method: 'POST',
+                body: new FormData(this),
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            });
+            const data = await res.json();
+
+            // 3. Handle Success (Always success for privacy/security reasons)
+            if (data.status === 'success') {
+                showToast('Check your email inbox.', 'success');
+                setTimeout(() => {
+                    window.location.href = data.redirect_url;
+                }, 1500);
+            }
+
+        } catch (err) {
+            console.error(err);
+            showToast('Connection error. Try again.', 'error');
+            btn.disabled = false;
+            btn.innerText = originalText;
+        }
+    });
+</script>
+{% endblock %}

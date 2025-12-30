@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    /* === Page Specific Styles === */
+    .error-code {
+        font-size: 8rem;
+        font-weight: 800;
+        /* Use the global gradient from base.html */
+        background: var(--grad-primary);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        line-height: 1;
+        /* Add a subtle glow/shadow */
+        filter: drop-shadow(0 4px 10px rgba(102, 126, 234, 0.3));
+    }
+
+    /* === Force Dark Look (Overrides Light Mode) === */
+    
+    /* 1. Force the card to have a dark background regardless of theme */
+    .card-modern {
+        /* Dark background color to ensure white text is visible */
+        background-color: #1a1a1a !important; 
+        
+        /* Optional: Dark Gradient/Glass effect */
+        background: linear-gradient(145deg, rgba(40, 40, 40, 0.95), rgba(20, 20, 20, 0.98)) !important;
+        
+        /* Ensure border contrasts against potential white body background */
+        border: 1px solid rgba(255, 255, 255, 0.15) !important;
+        
+        /* Stronger shadow to pop against light backgrounds */
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6) !important;
+        
+        /* Ensure rounded corners persist */
+        border-radius: 1rem !important;
+    }
+
+    /* 2. Force Text to be White */
+    .card-modern h2, 
+    .card-modern .text-white {
+        color: #ffffff !important;
+    }
+    
+    /* 3. Force Opacity helper to work with forced white text */
+    .card-modern .opacity-75 {
+        color: rgba(255, 255, 255, 0.75) !important;
+        opacity: 1 !important; /* Reset bootstrap opacity to rely on rgba color above */
+    }
+
+    /* 4. Fix Outline Button visibility in Light Mode */
+    /* This ensures the button remains white-outlined even if global CSS makes it dark */
+    .card-modern .btn-outline-light {
+        color: #ffffff !important;
+        border-color: #ffffff !important;
+    }
+    
+    .card-modern .btn-outline-light:hover {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+    }
+</style>
+
+<!-- Added a background color to the container wrapper to create a dark environment 
+     if the body background is white in light mode -->
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    
+    <!-- Use card-modern for the unified dark glass look -->
+    <div class="card-modern text-center p-4 p-md-5" style="max-width: 500px; width: 100%;">
+        
+        <!-- 404 Graphic -->
+        <div class="mb-3">
+            <div class="error-code">404</div>
+        </div>
+
+        <h2 class="fw-bold text-white mb-3">Page Not Found</h2>
+        
+        <p class="text-white opacity-75 mb-4">
+            The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.
+        </p>
+        
+        <!-- Actions -->
+        <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
+            <!-- Primary Action -->
+            <a href="{% url 'home' %}" class="btn-brand shadow-lg text-decoration-none">
+                <i class="fas fa-home me-2"></i> Go Home
+            </a>
+            
+            <!-- Secondary Action (Outline Style for Dark Mode) -->
+            <a href="{% url 'login' %}" class="btn btn-outline-light rounded-pill px-4 py-2 fw-bold d-flex align-items-center justify-content-center">
+                <i class="fas fa-sign-in-alt me-2"></i> Login
+            </a>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
