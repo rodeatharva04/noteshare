@@ -1,7 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
-<!-- Added data-bs-theme="dark" to force Bootstrap components to stay dark 
-     even if the user's browser is in Light Mode -->
+
 <html lang="en" data-bs-theme="dark">
 
 <head>
@@ -9,10 +8,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NoteShare</title>
 
-    <!-- FAVICON -->
-    <link rel="icon" type="image/png" href="https://img.icons8.com/fluency/48/reading.png">
 
-    <!-- FONTS -->
+    <link rel="icon" type="image/png" href="https://img.icons8.com/fluency/48/reading.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
@@ -23,42 +20,38 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* =========================================
-           1. CENTRALIZED DESIGN SYSTEM (THEME)
-           ========================================= */
         :root {
-            /* Brand Palette */
+           
             --brand-primary: #667eea;
             --brand-secondary: #764ba2;
             --brand-accent: #00d2ff;
             
-            /* Functional Colors */
+            
             --color-success: #198754;
             --color-danger: #ef4444;
             --color-warning: #f59e0b;
 
-            /* Gradients */
+           
             --grad-primary: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
             --grad-success: linear-gradient(135deg, #42e695 0%, #3bb2b8 100%);
             --grad-danger: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
             --grad-dark: linear-gradient(135deg, #232526 0%, #414345 100%);
 
-            /* Surfaces (Dark Mode) */
+            
             --bg-body: #0f1012;
             --surface-card: #1a1b1e;
             --surface-input: #25262b;
             --border-color: #2f3036;
             
-            /* Typography */
+           
             --text-main: #e0e0e0;
             --text-muted: #a0a0a0;
         }
 
-        /* === GLOBAL RESET === */
         body {
             background-color: var(--bg-body);
             color: var(--text-main);
-            font-family: 'Inter', sans-serif; /* Modern Font */
+            font-family: 'Inter', sans-serif; 
             display: flex;
             flex-direction: column;
             min-height: 100vh;
@@ -68,11 +61,7 @@
 
         a { text-decoration: none; transition: color 0.2s; }
 
-        /* =========================================
-           2. REUSABLE COMPONENTS
-           ========================================= */
         
-        /* MODERN CARD (Used in Login, Register, Profile, Details) */
         .card-modern {
             background: var(--surface-card);
             border: 1px solid var(--border-color);
@@ -82,7 +71,7 @@
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
         
-        /* CARD HEADER (Gradient Top) */
+     
         .card-header-modern {
             padding: 2.5rem 2rem;
             text-align: center;
@@ -92,7 +81,7 @@
         }
         .bg-gradient-success { background: var(--grad-success) !important; }
 
-        /* MODERN INPUTS */
+      
         .form-control, .form-select {
             background-color: var(--surface-input);
             border: 1px solid var(--border-color);
@@ -108,7 +97,7 @@
         }
         .form-control::placeholder { color: var(--text-muted); opacity: 0.7; }
         
-        /* Fix for input groups in Dark Mode */
+
         .input-group-text {
             background-color: var(--surface-input);
             border: 1px solid var(--border-color);
@@ -116,7 +105,6 @@
             color: var(--text-muted);
         }
 
-        /* BRAND BUTTONS */
         .btn-brand {
             background: var(--grad-primary);
             border: none;
@@ -130,16 +118,14 @@
         }
         .btn-brand:hover { opacity: 0.9; color: white; transform: translateY(-1px); }
 
-        /* UTILITIES */
+     
         .hover-warning:hover { color: var(--color-warning) !important; }
         .text-primary { color: var(--brand-primary) !important; }
 
-        /* =========================================
-           3. NAVBAR & SEARCH
-           ========================================= */
+
         .navbar-glass {
-            background: rgba(26, 27, 30, 0.85); /* Semi-transparent */
-            backdrop-filter: blur(12px);         /* Blur effect */
+            background: rgba(26, 27, 30, 0.85);
+            backdrop-filter: blur(12px);         
             -webkit-backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--border-color);
             padding: 1rem 0;
@@ -155,7 +141,7 @@
             letter-spacing: -0.5px;
         }
 
-        /* Search Bar styling */
+        
         .search-input {
             background: var(--surface-input) !important;
             border-radius: 50px 0 0 50px !important;
@@ -172,9 +158,7 @@
         }
         .search-btn:hover { color: white; }
 
-        /* =========================================
-           4. FOOTER SOCIALS (Preserved)
-           ========================================= */
+
         .social-btn {
             display: inline-flex; align-items: center; justify-content: center;
             width: 45px; height: 45px; border-radius: 50%; margin: 0 6px;
@@ -188,7 +172,7 @@
         .social-btn.leetcode:hover { background-color: #ffa116; }
 
         footer {
-            background-color: #050505; /* Darker than body */
+            background-color: #050505; 
             border-top: 1px solid var(--border-color);
         }
     </style>
@@ -196,10 +180,7 @@
 
 <body>
 
-    <!-- =========================================
-         GLOBAL TOAST NOTIFICATION (AJAX SUPPORT)
-         ========================================= -->
-    <!-- This container is hidden by default and triggered via JS -->
+    
     <div id="global-toast" 
          style="position: fixed; top: 90px; right: 20px; z-index: 9999; opacity: 0; transition: opacity 0.3s ease-in-out; pointer-events: none;">
         <div class="card-modern px-4 py-3 d-flex align-items-center gap-3 shadow-lg"
@@ -210,7 +191,6 @@
         </div>
     </div>
 
-    <!-- === HEADER === -->
     <nav class="navbar navbar-expand-lg navbar-dark navbar-glass sticky-top">
         <div class="container">
             <a class="navbar-brand" href="{% url 'home' %}">
@@ -241,7 +221,7 @@
                             </a>
                         </li>
                         <li class="nav-item dropdown">
-                            <!-- Toggle added for dropdown functionality -->
+                           
                             <a class="nav-link text-white d-flex align-items-center gap-2 dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 {% if user.profile.profile_pic %}
                                 <img src="{{ user.profile.profile_pic.url }}"
@@ -252,7 +232,7 @@
                                 {% endif %}
                                 <span class="d-lg-none text-truncate" style="max-width: 150px;">Profile</span>
                             </a>
-                            <!-- Standard Bootstrap Dropdown Menu -->
+                           
                             <ul class="dropdown-menu dropdown-menu-end">
                                 <li><a class="dropdown-item" href="{% url 'profile' %}">My Profile</a></li>
                                 <li><hr class="dropdown-divider"></li>
@@ -278,9 +258,9 @@
         </div>
     </nav>
 
-    <!-- === MAIN CONTENT === -->
+ 
     <div class="container main-content py-5">
-        <!-- Messages (Server Side) -->
+       
         {% if messages %}
             {% for message in messages %}
             <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm rounded-3 border-0 mb-4" role="alert">
@@ -294,12 +274,12 @@
         {% endblock %}
     </div>
 
-    <!-- === FOOTER === -->
+
     <footer class="text-center text-lg-start pt-5 mt-5">
         <div class="container pb-4">
             <div class="row align-items-center gy-4">
                 
-                <!-- Left Side -->
+          
                 <div class="col-md-6 text-center text-md-start">
                     <h5 class="text-uppercase fw-bold text-white mb-2">NoteShare</h5>
                     <p class="small mb-0 text-white-50">
@@ -308,7 +288,7 @@
                     </p>
                 </div>
 
-                <!-- Right Side (Socials) -->
+           
                 <div class="col-md-6 text-center text-md-end">
                     <span class="d-block d-md-inline mb-3 mb-md-0 me-md-3 text-white fw-bold small text-uppercase">
                         Connect:
@@ -338,17 +318,12 @@
         </div>
     </footer>
 
-    <!-- Bootstrap Bundle -->
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- =========================================
-         GLOBAL AJAX UTILITIES
-         ========================================= -->
+    
     <script>
-        /**
-         * 1. CSRF TOKEN HELPER
-         * Required for all POST requests via AJAX to Django.
-         */
+       
         function getCookie(name) {
             let cookieValue = null;
             if (document.cookie && document.cookie !== '') {
@@ -364,20 +339,17 @@
             return cookieValue;
         }
 
-        /**
-         * 2. GLOBAL TOAST NOTIFICATION
-         * Call showToast('Message', 'success'|'error') from any template.
-         */
+        
         function showToast(message, type = 'success') {
             const toast = document.getElementById('global-toast');
             const toastCard = document.getElementById('global-toast-card');
             const toastIcon = document.getElementById('global-toast-icon');
             const toastMsg = document.getElementById('global-toast-msg');
 
-            // Set Content
+           
             toastMsg.textContent = message;
 
-            // Set Colors based on Type
+           
             if (type === 'error') {
                 toastCard.style.borderLeftColor = 'var(--color-danger)';
                 toastIcon.className = 'fas fa-exclamation-circle text-danger fa-lg';
@@ -386,10 +358,10 @@
                 toastIcon.className = 'fas fa-check-circle text-success fa-lg';
             }
 
-            // Show
+           
             toast.style.opacity = '1';
             
-            // Auto Hide after 3 seconds
+           
             setTimeout(() => {
                 toast.style.opacity = '0';
             }, 3000);
