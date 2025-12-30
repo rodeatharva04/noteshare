@@ -2,16 +2,16 @@
 
 {% block content %}
 <div class="container d-flex justify-content-center align-items-center my-4">
-    <!-- Main Card -->
+   
     <div class="card-modern" style="max-width: 600px; width: 100%;">
 
-        <!-- HEADER: Custom Blue/Teal Gradient -->
+        
         <div class="card-header-modern"
             style="background: linear-gradient(135deg, var(--brand-accent), #117a8b);">
 
             <div class="position-relative d-inline-block mb-2">
                 {% if user.profile.profile_pic %}
-                <!-- Added ID 'header-profile-img' for AJAX updates -->
+               
                 <img src="{{ user.profile.profile_pic.url }}"
                      id="header-profile-img"
                      class="rounded-circle border border-3 border-white shadow-sm"
@@ -20,7 +20,7 @@
                      alt="Profile Picture"
                      onerror="this.style.display='none'; document.getElementById('default-icon').style.display='inline-block';">
                 
-                <!-- Fallback Icon -->
+                
                 <i id="default-icon" class="fas fa-user-circle fa-4x text-white-50" style="display: none;"></i>
                 {% else %}
                 <i class="fas fa-user-circle fa-4x text-white-50"></i>
@@ -35,7 +35,7 @@
             <form method="post" enctype="multipart/form-data" id="profileForm">
                 {% csrf_token %}
 
-                <!-- SECTION 1: Identity -->
+               
                 <div class="d-flex align-items-center mb-4 pb-2"
                      style="border-bottom: 1px solid var(--border-color);">
                     <i class="fas fa-user-tag me-2" style="color: var(--brand-accent);"></i>
@@ -66,7 +66,7 @@
                     </div>
                 </div>
 
-                <!-- Email -->
+               
                 <div class="mb-4">
                     <label for="email" class="small text-white text-uppercase fw-bold mb-1">
                         Email Address
@@ -78,7 +78,7 @@
                     </div>
                 </div>
 
-                <!-- SECTION 2: Public Profile -->
+              
                 <div class="d-flex align-items-center mb-4 mt-5 pb-2"
                      style="border-bottom: 1px solid var(--border-color);">
                     <i class="fas fa-id-card me-2" style="color: var(--brand-accent);"></i>
@@ -98,7 +98,7 @@
                     <label for="profile_pic" class="small text-white text-uppercase fw-bold mb-1">
                         Change Picture
                     </label>
-                    <!-- ID ADDED HERE for JS Access -->
+                   
                     <input type="file" id="profile_pic_input" name="profile_pic" class="form-control mb-2" accept="image/*">
                     <div class="form-text text-white-50 small">Max size: 5MB. Formats: JPG, PNG.</div>
 
@@ -114,7 +114,7 @@
                     {% endif %}
                 </div>
 
-                <!-- SECTION 3: AI Settings -->
+              
                 <div class="d-flex align-items-center mb-4 mt-5 pb-2"
                      style="border-bottom: 1px solid var(--border-color);">
                     <i class="fas fa-robot me-2" style="color: var(--brand-accent);"></i>
@@ -136,7 +136,7 @@
                     </div>
                 </div>
                 
-                <!-- SECTION 4: Security -->
+               
                 <div class="d-flex align-items-center mb-4 mt-5 pb-2"
                      style="border-bottom: 1px solid var(--border-color);">
                     <i class="fas fa-shield-alt me-2" style="color: var(--brand-accent);"></i>
@@ -152,7 +152,7 @@
                     </a>
                 </div>
 
-                <!-- Confirmation Box -->
+              
                 <div class="alert shadow-sm rounded-3 border-0"
                      style="background: rgba(220, 53, 69, 0.15);">
                     <div class="d-flex align-items-center mb-2">
@@ -169,7 +169,7 @@
                            required placeholder="••••••••" style="background: rgba(0,0,0,0.2);">
                 </div>
 
-                <!-- ACTION BUTTONS -->
+              
                 <div class="d-grid gap-2 d-md-flex justify-content-md-between mt-4">
                     <a href="{% url 'profile' %}"
                        class="btn btn-outline-light rounded-pill px-4 fw-bold d-flex align-items-center justify-content-center">
@@ -184,7 +184,7 @@
                 </div>
             </form>
 
-            <!-- Danger Zone -->
+            
             <div class="mt-5 pt-3" style="border-top: 1px dashed var(--color-danger);">
                 <h6 class="text-uppercase text-danger fw-bold mb-3 small">
                     <i class="fas fa-exclamation-triangle me-2"></i>
@@ -205,10 +205,10 @@
     </div>
 </div>
 
-<!-- Delete Account Modal -->
+
 <div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <!-- Styled to match the Card Modern Theme -->
+       
         <div class="modal-content text-white shadow-lg" 
              style="background: var(--surface-card); border: 1px solid var(--border-color);">
             
@@ -242,20 +242,18 @@
     </div>
 </div>
 
-<!-- JAVASCRIPT: AJAX & VALIDATION -->
+
 <script>
-    // 1. Profile Save Logic with File Validation
+    
     document.getElementById('profileForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         const btn = document.getElementById('saveProfileBtn');
         const originalText = btn.innerText;
         
-        // --- NEW: Client-Side File Validation ---
+        
         const fileInput = document.getElementById('profile_pic_input');
 
-        // Inside document.getElementById('profileForm').addEventListener...
-
-    // [PATCH START] Text Length Validation
+        
     const first_name = document.getElementById('first_name').value;
     const last_name = document.getElementById('last_name').value;
     const bio = document.getElementById('bio').value;
@@ -265,26 +263,24 @@
     if (last_name.length > 20) { showToast("Last name max 20 chars.", "error"); return; }
     if (bio.length > 300) { showToast("Bio max 300 chars.", "error"); return; }
     if (ai_inst.length > 500) { showToast("AI Instructions max 500 chars.", "error"); return; }
-    // [PATCH END]
-
-    // ... (File validation logic continues here) ...
+    
         if (fileInput.files.length > 0) {
             const file = fileInput.files[0];
-            const maxSize = 5 * 1024 * 1024; // 5MB Limit for Profile Pics
+            const maxSize = 5 * 1024 * 1024; 
             
-            // Size Check
+          
             if (file.size > maxSize) {
                 showToast("Image too large! Max size is 5MB.", "error");
                 return; 
             }
             
-            // Type Check (Basic)
+          
             if (!file.type.startsWith('image/')) {
                 showToast("Invalid file type. Please upload an image.", "error");
                 return;
             }
         }
-        // ----------------------------------------
+        
 
         btn.disabled = true;
         btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Saving...';
@@ -300,22 +296,20 @@
             if (data.status === 'success') {
                 showToast(data.message || 'Profile updated!', 'success');
                 
-                // Manual Update of Header Image (If view returns data)
+               
                 const headerImg = document.getElementById('header-profile-img');
                 if (headerImg && data.new_avatar_url) {
                     headerImg.src = data.new_avatar_url;
                 }
 
-                // Redirect logic (e.g. for email changes) or Fallback Reload
-                // If the view didn't return specific new data to update DOM, we should reload 
-                // to ensure the Navbar and other parts of the site reflect changes.
+               
                 if (data.redirect_url) {
                     setTimeout(() => window.location.href = data.redirect_url, 1000);
                 } else if (!data.new_avatar_url) {
-                    // Fallback: Reload if no data came back to update UI manually
+                   
                     setTimeout(() => window.location.reload(), 1000);
                 } else {
-                    // Stay on page and re-enable button (True AJAX feel)
+        
                     btn.disabled = false;
                     btn.innerText = originalText;
                 }
@@ -332,7 +326,6 @@
         }
     });
 
-    // 2. Delete Account Logic (AJAX)
     document.getElementById('deleteAccountForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         const btn = document.getElementById('deleteAccountBtn');
