@@ -6,20 +6,12 @@ load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# --- SECURITY ---
-# If on Render -> DEBUG is False. If on Laptop -> DEBUG is True.
-# We default to True for local development if the env var isn't found.
 DEBUG = os.environ.get('DEBUG') == 'True'
-
-# Force Debug=True for your local testing right now (You can change this later)
-# DEBUG = False # Uncomment this only when deploying to Production
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-local-dev-key')
 
-# Allow all hosts (Simplifies local vs production setup)
 ALLOWED_HOSTS = ['*']
 
-# Trusted Origins (Important for Railway/Render + AJAX CSRF)
 CSRF_TRUSTED_ORIGINS = [
     'https://*.onrender.com',
     'https://*.railway.app',
@@ -40,10 +32,10 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware', # <--- ENABLED FOR STATIC FILES
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware', # <--- CRITICAL FOR AJAX POST
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -68,7 +60,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'noteshare.wsgi.application'
 
-# --- DATABASE (SQLite) ---
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -79,14 +70,13 @@ DATABASES = {
 AUTH_PASSWORD_VALIDATORS = []
 
 LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'Asia/Kolkata' 
+TIME_ZONE = 'Asia/Kolkata'
 USE_I18N = True
 USE_TZ = True
 
-# --- STATIC FILES (WhiteNoise) ---
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
-STATIC_ROOT = BASE_DIR / 'staticfiles' 
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 MEDIA_URL = '/media/'
@@ -98,20 +88,15 @@ LOGIN_REDIRECT_URL = 'home'
 LOGIN_URL = 'login'
 LOGOUT_REDIRECT_URL = 'login'
 
-# --- EMAIL CONFIGURATION (Brevo API) ---
 BREVO_API_KEY = os.environ.get('BREVO_API_KEY')
 DEFAULT_FROM_EMAIL = "rodeatharva05@gmail.com"
 
-# --- AI CONFIGURATION (Gemini) ---
 GOOGLE_API_KEY = os.environ.get('GOOGLE_API_KEY', None)
 if not GOOGLE_API_KEY:
     print("❌ WARNING: GOOGLE_API_KEY is None! AI will not work.")
 else:
     print(f"✅ Google API Key loaded (Length: {len(GOOGLE_API_KEY)})")
 
-# --- CRITICAL FIX FOR LOCALHOST ---
-# Only require HTTPS/SSL when in Production (DEBUG=False).
-# If we force these on Localhost (DEBUG=True), cookies fail and you can't log in.
 if not DEBUG:
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
@@ -120,5 +105,4 @@ else:
     SESSION_COOKIE_SECURE = False
     CSRF_COOKIE_SECURE = False
 
-# Allows iframe embedding for the PDF viewer
 X_FRAME_OPTIONS = 'SAMEORIGIN'
