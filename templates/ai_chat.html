@@ -2,21 +2,17 @@
 {% load static %}
 
 {% block content %}
-<!-- =========================================
-     1. LIBRARIES & CONFIGURATION
-     ========================================= -->
-<!-- Markdown & Sanitization -->
+
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
 
-<!-- Code Syntax Highlighting (Atom One Dark) -->
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/javascript.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
 
-<!-- MathJax (LaTeX Formulas) -->
 <script>
     window.MathJax = {
         tex: {
@@ -30,11 +26,7 @@
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
 <style>
-    /* =========================================
-       2. APP-SPECIFIC STYLES (UNTOUCHED)
-       ========================================= */
 
-    /* --- MathJax Overflow Fix --- */
     mjx-container {
         overflow-x: auto !important;
         overflow-y: hidden;
@@ -62,7 +54,7 @@
         background: var(--brand-primary);
     }
 
-    /* --- Theme Variables (Local Override for Full Screen App) --- */
+
     :root {
         --study-bg: #0f0f12;
         --study-surface: #1e1e1e;
@@ -70,7 +62,7 @@
         --study-text: #e0e0e0;
     }
 
-    /* --- Full Screen Reset --- */
+
     nav.navbar,
     footer {
         display: none !important;
@@ -91,7 +83,6 @@
         color: var(--study-text) !important;
     }
 
-    /* --- Main Layout --- */
     .study-container {
         display: flex;
         flex-direction: column;
@@ -100,7 +91,7 @@
         background-color: var(--study-bg);
     }
 
-    /* --- Viewer Pane (Left/Top) --- */
+
     .viewer-pane {
         display: flex;
         flex-direction: column;
@@ -138,7 +129,7 @@
         background-color: white;
     }
 
-    /* --- Code Viewer Style --- */
+
     .dark-glass-viewer {
         width: 100%;
         height: 100%;
@@ -163,7 +154,7 @@
         min-height: 100%;
     }
 
-    /* --- Resizer Handle --- */
+
     .resizer {
         background: var(--study-bg);
         border: 1px solid var(--study-border);
@@ -187,7 +178,6 @@
         border-radius: 2px;
     }
 
-    /* --- Chat Pane (Right/Bottom) --- */
     .chat-pane {
         display: flex;
         flex-direction: column;
@@ -222,7 +212,6 @@
         flex-shrink: 0;
     }
 
-    /* --- Chat Bubbles --- */
     .msg {
         max-width: 85%;
         padding: 12px 16px;
@@ -274,7 +263,6 @@
         border: 1px solid #444;
     }
 
-    /* Typing Animation */
     .typing {
         display: none;
         align-self: flex-start;
@@ -311,7 +299,7 @@
         }
     }
 
-    /* --- Responsive Logic --- */
+
     @media (min-width: 769px) {
         .study-container {
             flex-direction: row;
@@ -373,16 +361,13 @@
     }
 </style>
 
-<!-- =========================================
-     3. HTML STRUCTURE
-     ========================================= -->
+
 <div class="study-container" id="mainContainer">
 
-    <!-- === LEFT/TOP: VIEWER PANE === -->
+
     <div class="viewer-pane" id="viewerPane">
 
         <div class="viewer-header">
-            <!-- Title -->
             <div class="text-truncate fw-bold d-flex align-items-center gap-2"
                 style="max-width: 50%; color: #fff !important;">
                 <i class="fas fa-file-alt text-primary"></i>
@@ -392,10 +377,10 @@
                 </span>
             </div>
 
-            <!-- UNIFIED TOOLBAR -->
+        
             <div class="d-flex align-items-center gap-2">
 
-                <!-- 1. VIEW (Subtle Dark Button) -->
+   
                 <a href="{{ note.file.url }}" target="_blank"
                     class="btn btn-sm text-white d-flex align-items-center gap-2 px-3"
                     style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); border-radius: 50px; height: 34px;"
@@ -404,7 +389,7 @@
                     <span class="d-none d-md-inline small">Open</span>
                 </a>
 
-                <!-- 2. DOWNLOAD (Primary Gradient Button) -->
+          
                 <a href="{{ note.file.url }}" download
                     class="btn btn-sm btn-brand d-flex align-items-center gap-2 px-3 shadow-sm"
                     style="border-radius: 50px; height: 34px; border: none;" title="Save to Device">
@@ -412,7 +397,7 @@
                     <span class="d-none d-md-inline small">Download</span>
                 </a>
 
-                <!-- 3. EXIT (Subtle Danger Button) - Uses JS Back for Instant Feel -->
+          
                 <a href="{% url 'note_detail' note.pk %}" onclick="event.preventDefault(); window.history.back();"
                     class="btn btn-sm btn-outline-danger rounded-pill px-3 d-flex align-items-center gap-2"
                     title="Exit Study Mode">
@@ -486,7 +471,7 @@
         <div class="grip-lines"></div>
     </div>
 
-    <!-- === RIGHT/BOTTOM: CHAT PANE === -->
+
     <div class="chat-pane" id="chatPane">
         <div class="chat-header">
             <div class="d-flex align-items-center gap-3">
@@ -510,11 +495,11 @@
             </div>
         </div>
 
-        <!-- INPUT AREA with FILE TOGGLE -->
+
         <div class="chat-input-box">
             <form id="chatForm" class="d-flex gap-2 align-items-end">
 
-                <!-- FILE CONTEXT TOGGLE (Only if file < 1MB) -->
+
                 {% if note.file.size < 1048576 %} <button type="button" id="fileToggleBtn"
                     class="btn btn-outline-secondary rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
                     style="width: 42px; height: 42px; transition: all 0.3s;"
@@ -523,11 +508,10 @@
                     </button>
                     {% endif %}
 
-                    <!-- TEXT INPUT -->
                     <input type="text" id="userInput" class="form-control rounded-pill" placeholder="Ask a question..."
                         autocomplete="off" style="height: 42px;">
 
-                    <!-- SEND BUTTON -->
+
                     <button type="submit" id="sendBtn"
                         class="btn btn-brand rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
                         style="width: 42px; height: 42px;">
@@ -539,11 +523,9 @@
 
 </div>
 
-<!-- =========================================
-     4. JAVASCRIPT LOGIC
-     ========================================= -->
+
 <script>
-    // === 1. SMART RESIZER LOGIC (Touch & Mouse) ===
+
     const resizer = document.getElementById('dragHandle');
     const leftPane = document.getElementById('viewerPane');
     let isResizing = false;
@@ -582,27 +564,27 @@
         document.removeEventListener('mouseup', stopResize); document.removeEventListener('touchend', stopResize);
     }
 
-    // === 2. CHAT LOGIC + FILE TOGGLE ===
+
     const chatBox = document.getElementById('chatBox');
     const chatForm = document.getElementById('chatForm');
     const userInput = document.getElementById('userInput');
     const typingIndicator = document.getElementById('typingIndicator');
     const sendBtn = document.getElementById('sendBtn');
 
-    // -- File Toggle Button Logic --
+   
     const fileToggleBtn = document.getElementById('fileToggleBtn');
-    let useFile = false; // State: Default OFF
+    let useFile = false; 
 
     if (fileToggleBtn) {
         fileToggleBtn.addEventListener('click', () => {
-            useFile = !useFile; // Toggle
+            useFile = !useFile; 
             if (useFile) {
-                // Active State (Green)
+       
                 fileToggleBtn.classList.remove('btn-outline-secondary');
                 fileToggleBtn.classList.add('btn-success');
                 fileToggleBtn.style.boxShadow = "0 0 10px rgba(25, 135, 84, 0.4)";
             } else {
-                // Inactive State (Gray)
+
                 fileToggleBtn.classList.remove('btn-success');
                 fileToggleBtn.classList.add('btn-outline-secondary');
                 fileToggleBtn.style.boxShadow = "none";
@@ -610,18 +592,18 @@
         });
     }
 
-    // -- Submit Message (Full AJAX) --
+   
     chatForm.addEventListener('submit', async function (e) {
-        e.preventDefault(); // STOP PAGE RELOAD
+        e.preventDefault(); 
         
         const text = userInput.value.trim();
         if (!text) return;
 
-        // 1. UI Updates (Optimistic)
+    
         addMsg(text, 'user');
         userInput.value = '';
         
-        // Disable button to prevent double-sends (Simulates "Busy")
+     
         sendBtn.disabled = true;
         
         typingIndicator.style.display = 'block';
@@ -629,25 +611,25 @@
         chatBox.scrollTop = chatBox.scrollHeight;
 
         try {
-            // 2. Network Request (AJAX)
+           
             const res = await fetch("{% url 'ai_chat_api' %}", {
                 method: 'POST',
                 headers: { 
                     'Content-Type': 'application/json', 
-                    'X-CSRFToken': '{{ csrf_token }}' // Critical for Django Security
+                    'X-CSRFToken': '{{ csrf_token }}' 
                 },
                 body: JSON.stringify({
                     message: text,
                     note_id: "{{ note.pk }}",
-                    use_file: useFile // Send the File Toggle State
+                    use_file: useFile 
                 })
             });
             const data = await res.json();
 
-            // 3. Response Handling
+          
             typingIndicator.style.display = 'none';
             if (data.response) {
-                // Render Markdown + HTML securely
+            
                 addMsg(DOMPurify.sanitize(marked.parse(data.response)), 'ai', true);
             } else {
                 addMsg("Error: " + (data.error || "Unknown response"), 'ai');
@@ -658,7 +640,7 @@
             addMsg("Network Error: Could not reach Gemini.", 'ai');
             console.error(error);
         } finally {
-            // Re-enable button
+           
             sendBtn.disabled = false;
         }
     });
@@ -672,11 +654,11 @@
         chatBox.insertBefore(div, typingIndicator);
         chatBox.scrollTop = chatBox.scrollHeight;
 
-        // Render MathJax (Formulas) and Highlight Code
+     
         if (sender === 'ai') {
             if (window.MathJax) {
                 MathJax.typesetPromise([div]).then(() => {
-                    chatBox.scrollTop = chatBox.scrollHeight; // Scroll again after math loads
+                    chatBox.scrollTop = chatBox.scrollHeight; 
                 });
             }
             div.querySelectorAll('pre code').forEach((block) => {
