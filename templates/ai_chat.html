@@ -85,6 +85,7 @@
     flex-direction: column;
     width: 100vw;
     height: 100vh;
+    height: 100dvh;
     background-color: var(--study-bg);
   }
 
@@ -177,6 +178,7 @@
     flex-direction: column;
     background-color: #161616;
     overflow: hidden;
+    min-height: 0; /* Important for flex child containment */
   }
 
   .chat-header {
@@ -203,7 +205,8 @@
     padding: 20px;
     background: var(--study-surface);
     border-top: 1px solid var(--study-border);
-    flex-shrink: 0;
+    flex-shrink: 0; /* Prevents the bar from being squished */
+    padding-bottom: calc(20px + env(safe-area-inset-bottom)); /* Safari iOS fix */
   }
 
   .msg {
@@ -282,15 +285,8 @@
   }
 
   @keyframes bounce {
-
-    0%,
-    100% {
-      transform: translateY(0);
-    }
-
-    50% {
-      transform: translateY(-4px);
-    }
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
   }
 
   @media (min-width: 769px) {
@@ -322,11 +318,12 @@
   @media (max-width: 768px) {
     .study-container {
       flex-direction: column;
+      height: 100dvh !important; /* Forces layout to fill screen */
     }
 
     .viewer-pane {
       width: 100% !important;
-      height: 45%;
+      height: 40%; /* Reduced slightly for more chat space */
       flex: none;
       border-right: none;
       border-bottom: 1px solid var(--study-border);
@@ -334,8 +331,10 @@
 
     .chat-pane {
       width: 100% !important;
-      height: auto;
-      flex: 1;
+      height: 0 !important; /* Important: prevents content from stretching the pane */
+      flex: 1 1 auto !important; /* Chat fills remaining space precisely */
+      display: flex !important;
+      flex-direction: column !important;
     }
 
     .resizer {
@@ -350,6 +349,10 @@
     .grip-lines {
       width: 40px;
       height: 4px;
+    }
+    
+    .chat-input-box {
+        padding: 10px 15px !important; /* Smaller padding on mobile */
     }
   }
 </style>
@@ -607,6 +610,14 @@
         hljs.highlightElement(block);
       });
     }
+  }
+
+  // Mobile Keyboard fix: ensures the input stays visible when keyboard pops up
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', () => {
+      document.body.style.height = window.visualViewport.height + 'px';
+      chatBox.scrollTop = chatBox.scrollHeight;
+    });
   }
 </script>
 {% endblock %}
