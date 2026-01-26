@@ -17,3 +17,8 @@ Pillow
 sib-api-v3-sdk
 
 google-generativeai
+
+dj-database-url
+psycopg2-binary
+
+
