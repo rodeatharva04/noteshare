@@ -94,7 +94,7 @@ LOGIN_URL = 'login'
 LOGOUT_REDIRECT_URL = 'login'
 
 BREVO_API_KEY = os.environ.get('BREVO_API_KEY')
-DEFAULT_FROM_EMAIL = "rodeatharva05@gmail.com"
+DEFAULT_FROM_EMAIL = "rodeatharva04@gmail.com"
 
 GOOGLE_API_KEY = os.environ.get('GOOGLE_API_KEY', None)
 if not GOOGLE_API_KEY:
